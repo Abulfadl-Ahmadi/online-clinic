@@ -156,6 +156,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost", cast=Csv())
 INTERNAL_IPS = config("INTERNAL_IPS", default="127.0.0.1", cast=Csv())
 
+# Trust Nginx reverse proxy headers behind Cloudflare HTTPS
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_PORT = True
+
 
 # ---------------------------------------------------------------
 # CORS & CSRF Configuration
