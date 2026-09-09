@@ -14,6 +14,7 @@ jobs:
         host: ${{ secrets.SERVER_IP }}
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
+        command_timeout: 30m
         script: |
           # 1. Navigate to the monorepo root on the server
           cd /opt/online-clinic
@@ -29,11 +30,11 @@ jobs:
           fi
           touch backend/online_clinic_backend_db.sqlite3
           
-          # 4. Rebuild and start application containers
-          docker compose -f docker-compose.yml up -d --build
+          # 4. Start backend services first so API is immediately live
+          docker compose -f docker-compose.yml up -d --build redis backend celery_worker celery_beat
           
-          # 5. Force restart Celery to pick up any Django code changes safely
-          docker compose -f docker-compose.yml restart celery_worker celery_beat
+          # 5. Build and start frontend Next.js container
+          docker compose -f docker-compose.yml up -d --build frontend
           
           # 6. Start / update monitoring stack (Prometheus, Grafana, Loki, Promtail, Node Exporter, cAdvisor)
           docker compose -f devops/docker-compose.monitoring.yml up -d
