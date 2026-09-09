@@ -1,0 +1,16 @@
+.git
+.gitignore
+.env
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+online_clinic_backend_db.sqlite3
+media/
+logs/

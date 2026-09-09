@@ -1,0 +1,3 @@
+from .appointment_admin import AppointmentAdmin
+from .availability_exception_admin import AvailabilityExceptionAdmin
+from .recurring_availability_admin import RecurringAvailabilityAdmin

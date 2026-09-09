@@ -1,0 +1,4 @@
+from .appointment_view import AppointmentViewSet
+from .doctor_availability_view import DoctorAvailabilityViewSet
+from .availability_exception_view import AvailabilityExceptionViewSet
+from .recurring_availability_view import RecurringAvailabilityViewSet

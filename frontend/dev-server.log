@@ -1,0 +1,238 @@
+
+> online-clinic-frontend@0.1.0 dev
+> next dev --turbopack
+
+   ▲ Next.js 15.5.4 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://169.254.83.107:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ○ Compiling middleware ...
+ ✓ Compiled middleware in 2.7s
+ ✓ Ready in 9.5s
+ ○ Compiling / ...
+ ✓ Compiled / in 34.7s
+✅ Environment variables validated successfully.
+ GET / 200 in 771ms
+ ○ Compiling /articles ...
+ ✓ Compiled /articles in 5.8s
+
+🌐 [apiFetch] Request Details:
+  URL: http://localhost:8000/api/v1/articles/categories/?page=1&ordering=name
+  Method: GET
+  Headers: undefined
+
+🌐 [apiFetch] Request Details:
+  URL: http://localhost:8000/api/v1/articles/tags/?page=1&ordering=name
+  Method: GET
+  Headers: undefined
+
+🌐 [apiFetch] Request Details:
+  URL: http://localhost:8000/api/v1/articles/articles/?page=1&ordering=-published_at
+  Method: GET
+  Headers: undefined
+  Response Status: 200 
+  Response Body (raw): {
+  "count": 0,
+  "next": null,
+  "previous": null,
+  "results": []
+}
+  Response Body (transformed): {
+  "count": 0,
+  "next": null,
+  "previous": null,
+  "results": []
+}
+  ✅ Request Successful!
+
+  Response Status: 200 
+  Response Body (raw): {
+  "count": 0,
+  "next": null,
+  "previous": null,
+  "results": []
+}
+  Response Body (transformed): {
+  "count": 0,
+  "next": null,
+  "previous": null,
+  "results": []
+}
+  ✅ Request Successful!
+
+  Response Status: 200 OK
+  Response Body (raw): {
+  "count": 0,
+  "next": null,
+  "previous": null,
+  "results": []
+}
+  Response Body (transformed): {
+  "count": 0,
+  "next": null,
+  "previous": null,
+  "results": []
+}
+  ✅ Request Successful!
+
+ GET /articles 200 in 8464ms
+ ○ Compiling /about-us ...
+ ✓ Compiled /about-us in 4.6s
+ GET /about-us 200 in 5814ms
+ ○ Compiling /auth/login ...
+ ✓ Compiled /auth/login in 3.8s
+ GET /auth/login 200 in 4690ms
+✅ Environment variables validated successfully.
+ GET /auth/login?next=http%3A%2F%2Flocalhost%3A3000%2Fuser%2Ftransactions 200 in 875ms
+ ○ Compiling /articles/[slug] ...
+ ✓ Compiled /articles/[slug] in 18.4s
+ ⚠ ./node_modules/isomorphic-dompurify
+Package jsdom can't be external
+The request jsdom matches serverExternalPackages (or the default list).
+The package resolves to a different version when requested from the project directory (30.0.1) compared to the package requested from the importing module (27.4.0).
+Make sure to install the same version of the package in both locations.
+
+
+ ⚠ ./node_modules/isomorphic-dompurify/node_modules/jsdom/lib
+Package whatwg-mimetype can't be external
+The request whatwg-mimetype matches serverExternalPackages (or the default list).
+The package resolves to a different version when requested from the project directory (5.0.0) compared to the package requested from the importing module (4.0.0).
+Make sure to install the same version of the package in both locations.
+
+
+ ⚠ ./node_modules/isomorphic-dompurify/node_modules/jsdom/lib/jsdom/living/fetch
+Package whatwg-mimetype can't be external
+The request whatwg-mimetype matches serverExternalPackages (or the default list).
+The package resolves to a different version when requested from the project directory (5.0.0) compared to the package requested from the importing module (4.0.0).
+Make sure to install the same version of the package in both locations.
+
+
+ ⚠ ./node_modules/isomorphic-dompurify/node_modules/jsdom/lib/jsdom/living/file-api
+Package whatwg-mimetype can't be external
+The request whatwg-mimetype matches serverExternalPackages (or the default list).
+The package resolves to a different version when requested from the project directory (5.0.0) compared to the package requested from the importing module (4.0.0).
+Make sure to install the same version of the package in both locations.
+
+
+ ⚠ ./node_modules/isomorphic-dompurify/node_modules/jsdom/lib/jsdom/living/nodes
+Package whatwg-mimetype can't be external
+The request whatwg-mimetype matches serverExternalPackages (or the default list).
+The package resolves to a different version when requested from the project directory (5.0.0) compared to the package requested from the importing module (4.0.0).
+Make sure to install the same version of the package in both locations.
+
+
+ ⚠ ./node_modules/isomorphic-dompurify/node_modules/jsdom/lib/jsdom/living/xhr
+Package whatwg-mimetype can't be external
+The request whatwg-mimetype matches serverExternalPackages (or the default list).
+The package resolves to a different version when requested from the project directory (5.0.0) compared to the package requested from the importing module (4.0.0).
+Make sure to install the same version of the package in both locations.
+
+
+✅ Environment variables validated successfully.
+
+🌐 [apiFetch] Request Details:
+  URL: http://localhost:8000/api/v1/articles/articles/some-slug/
+  Method: GET
+  Headers: undefined
+
+🌐 [apiFetch] Request Details:
+  URL: http://localhost:8000/api/v1/articles/articles/some-slug/
+  Method: GET
+  Headers: undefined
+  Response Status: 404 Not Found
+  Response Status: 404 Not Found
+  Response Body (raw): {
+  "detail": "No Article matches the given query."
+}
+  ❌ Request Failed!
+  Error Type: NotFound
+  Error Message: No message
+  Response Body (raw): {
+  "detail": "No Article matches the given query."
+}
+  ❌ Request Failed!
+  Error Type: NotFound
+  Error Message: No message
+ GET /about-us 200 in 765ms
+ GET /auth/login 200 in 1001ms
+ GET /auth/login?next=http%3A%2F%2Flocalhost%3A3000%2Fuser%2Ftransactions 200 in 641ms
+ ○ Compiling /auth/register ...
+ ✓ Compiled /auth/register in 3.8s
+ GET /auth/register 200 in 4986ms
+ ✓ Compiled in 942ms
+ ✓ Compiled / in 431ms
+✅ Environment variables validated successfully.
+ GET / 200 in 2712ms
+ ✓ Compiled /articles in 138ms
+
+🌐 [apiFetch] Request Details:
+  URL: http://localhost:8000/api/v1/articles/categories/?page=1&ordering=name
+  Method: GET
+  Headers: undefined
+
+🌐 [apiFetch] Request Details:
+  URL: http://localhost:8000/api/v1/articles/tags/?page=1&ordering=name
+  Method: GET
+  Headers: undefined
+  Response Status: 200 
+  Response Status: 200 
+  Response Body (raw): {
+  "count": 0,
+  "next": null,
+  "previous": null,
+  "results": []
+}
+  Response Body (transformed): {
+  "count": 0,
+  "next": null,
+  "previous": null,
+  "results": []
+}
+  ✅ Request Successful!
+
+  Response Body (raw): {
+  "count": 0,
+  "next": null,
+  "previous": null,
+  "results": []
+}
+  Response Body (transformed): {
+  "count": 0,
+  "next": null,
+  "previous": null,
+  "results": []
+}
+  ✅ Request Successful!
+
+
+🌐 [apiFetch] Request Details:
+  URL: http://localhost:8000/api/v1/articles/articles/?page=1&ordering=-published_at
+  Method: GET
+  Headers: undefined
+  Response Status: 200 OK
+  Response Body (raw): {
+  "count": 0,
+  "next": null,
+  "previous": null,
+  "results": []
+}
+  Response Body (transformed): {
+  "count": 0,
+  "next": null,
+  "previous": null,
+  "results": []
+}
+  ✅ Request Successful!
+
+ GET /articles 200 in 1032ms
+ ✓ Compiled /about-us in 143ms
+ GET /about-us 200 in 754ms
+ ✓ Compiled /auth/login in 411ms
+✅ Environment variables validated successfully.
+ GET /auth/login 200 in 2432ms
+ ✓ Compiled in 2.3s
+ ✓ Compiled middleware in 302ms
+ ✓ Compiled in 1187ms
+ ✓ Compiled in 6.1s
