@@ -21,12 +21,11 @@ jobs:
           # 2. Pull the latest unified code
           git pull origin main
           
-          # Print working directory and files for debugging
-          pwd
-          ls -la
-          
-          # 3. Rebuild and start the containers explicitly providing the file
+          # 3. Rebuild and start application containers
           docker compose -f docker-compose.yml up -d --build || docker-compose -f docker-compose.yml up -d --build
           
           # 4. Force restart Celery to pick up any Django code changes safely
           docker compose -f docker-compose.yml restart celery_worker celery_beat || docker-compose -f docker-compose.yml restart celery_worker celery_beat
+          
+          # 5. Start / update monitoring stack (Prometheus, Grafana, Loki, Promtail, Node Exporter, cAdvisor)
+          docker compose -f devops/docker-compose.monitoring.yml up -d || docker-compose -f devops/docker-compose.monitoring.yml up -d
