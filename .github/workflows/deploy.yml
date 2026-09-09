@@ -21,8 +21,12 @@ jobs:
           # 2. Pull the latest unified code
           git pull origin main
           
-          # 3. Rebuild and start the containers
-          docker compose up -d --build
+          # Print working directory and files for debugging
+          pwd
+          ls -la
+          
+          # 3. Rebuild and start the containers explicitly providing the file
+          docker compose -f docker-compose.yml up -d --build || docker-compose -f docker-compose.yml up -d --build
           
           # 4. Force restart Celery to pick up any Django code changes safely
-          docker compose restart celery_worker celery_beat
+          docker compose -f docker-compose.yml restart celery_worker celery_beat || docker-compose -f docker-compose.yml restart celery_worker celery_beat
