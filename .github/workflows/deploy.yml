@@ -4,46 +4,84 @@ on:
   push:
     branches: [ "main", "master" ]
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
-  deploy:
+  build-and-push:
+    name: Build & Push Images to GHCR
     runs-on: ubuntu-latest
     steps:
-    - name: Execute Deployment Script on Server
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.SERVER_IP }}
-        username: ${{ secrets.SERVER_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        command_timeout: 30m
-        script: |
-          # 1. Navigate to the monorepo root on the server
-          cd /opt/online-clinic
-          
-          # 2. Pull the latest unified code
-          git pull origin main
-          
-          # Ensure Swap memory exists (prevents VPS freeze during npm / next build on low RAM)
-          if [ ! -f /swapfile ] && [ $(free -m | awk '/^Mem:/{print $2}') -lt 4000 ]; then
-            fallocate -l 2G /swapfile || dd if=/dev/zero of=/swapfile bs=1M count=2048
-            chmod 600 /swapfile
-            mkswap /swapfile
-            swapon /swapfile
-            echo '/swapfile none swap sw 0 0' >> /etc/fstab || true
-          fi
-          
-          # 3. Ensure environment files and sqlite db exist as files
-          [ ! -f frontend/.env.local ] && [ -f frontend/.env.example ] && cp frontend/.env.example frontend/.env.local || true
-          [ ! -f backend/.env ] && [ -f backend/.env.example ] && cp backend/.env.example backend/.env || true
-          if [ -d backend/online_clinic_backend_db.sqlite3 ]; then
-            rm -rf backend/online_clinic_backend_db.sqlite3
-          fi
-          touch backend/online_clinic_backend_db.sqlite3
-          
-          # 4. Start backend services first so API is immediately live
-          docker compose -f docker-compose.yml up -d --build redis backend celery_worker celery_beat
-          
-          # 5. Build and start frontend Next.js container
-          docker compose -f docker-compose.yml up -d --build frontend
-          
-          # 6. Start / update monitoring stack (Prometheus, Grafana, Loki, Promtail, Node Exporter, cAdvisor)
-          docker compose -f devops/docker-compose.monitoring.yml up -d
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Lowercase repository owner
+        id: repo_owner
+        run: echo "owner=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_OUTPUT
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Backend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: true
+          tags: ghcr.io/${{ steps.repo_owner.outputs.owner }}/online-clinic-backend:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push Frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          push: true
+          tags: ghcr.io/${{ steps.repo_owner.outputs.owner }}/online-clinic-frontend:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    name: Deploy to Production Server
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Execute Deployment on Server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # 1. Navigate to the monorepo root on the server
+            cd /opt/online-clinic
+            
+            # 2. Pull latest code
+            git pull origin main
+            
+            # 3. Ensure environment files and sqlite db exist
+            [ ! -f frontend/.env.local ] && [ -f frontend/.env.example ] && cp frontend/.env.example frontend/.env.local || true
+            [ ! -f backend/.env ] && [ -f backend/.env.example ] && cp backend/.env.example backend/.env || true
+            if [ -d backend/online_clinic_backend_db.sqlite3 ]; then
+              rm -rf backend/online_clinic_backend_db.sqlite3
+            fi
+            touch backend/online_clinic_backend_db.sqlite3
+            
+            # 4. Pull pre-built images from GitHub Container Registry (takes seconds!)
+            docker compose pull
+            
+            # 5. Launch all services instantly
+            docker compose up -d
+            
+            # 6. Restart Celery to pick up latest state
+            docker compose restart celery_worker celery_beat
+            
+            # 7. Start / update monitoring stack
+            docker compose -f devops/docker-compose.monitoring.yml up -d

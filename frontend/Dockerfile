@@ -19,6 +19,9 @@ COPY . .
 # Next.js telemetry is disabled
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
+ENV BASE_API_URL="https://api.dr-rahimi-pt.ir/api/v1"
+ENV API_TIMEOUT_MS="30000"
+ENV NEXT_PUBLIC_REGISTER_STORE_KEY="online_clinic_register_state"
 
 RUN npm run build
 
