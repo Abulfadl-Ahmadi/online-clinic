@@ -79,8 +79,8 @@ services:
   cadvisor:
     image: ghcr.io/google/cadvisor:latest
     container_name: monitoring_cadvisor
-    ports:
-      - "8080:8080"
+    expose:
+      - "8080"
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:ro
