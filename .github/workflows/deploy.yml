@@ -21,11 +21,15 @@ jobs:
           # 2. Pull the latest unified code
           git pull origin main
           
-          # 3. Rebuild and start application containers
-          docker compose -f docker-compose.yml up -d --build || docker-compose -f docker-compose.yml up -d --build
+          # 3. Ensure environment files exist (copy templates if not present yet)
+          [ ! -f frontend/.env.local ] && [ -f frontend/.env.example ] && cp frontend/.env.example frontend/.env.local || true
+          [ ! -f backend/.env ] && [ -f backend/.env.example ] && cp backend/.env.example backend/.env || true
           
-          # 4. Force restart Celery to pick up any Django code changes safely
-          docker compose -f docker-compose.yml restart celery_worker celery_beat || docker-compose -f docker-compose.yml restart celery_worker celery_beat
+          # 4. Rebuild and start application containers
+          docker compose -f docker-compose.yml up -d --build
           
-          # 5. Start / update monitoring stack (Prometheus, Grafana, Loki, Promtail, Node Exporter, cAdvisor)
-          docker compose -f devops/docker-compose.monitoring.yml up -d || docker-compose -f devops/docker-compose.monitoring.yml up -d
+          # 5. Force restart Celery to pick up any Django code changes safely
+          docker compose -f docker-compose.yml restart celery_worker celery_beat
+          
+          # 6. Start / update monitoring stack (Prometheus, Grafana, Loki, Promtail, Node Exporter, cAdvisor)
+          docker compose -f devops/docker-compose.monitoring.yml up -d
