@@ -21,9 +21,13 @@ jobs:
           # 2. Pull the latest unified code
           git pull origin main
           
-          # 3. Ensure environment files exist (copy templates if not present yet)
+          # 3. Ensure environment files and sqlite db exist as files
           [ ! -f frontend/.env.local ] && [ -f frontend/.env.example ] && cp frontend/.env.example frontend/.env.local || true
           [ ! -f backend/.env ] && [ -f backend/.env.example ] && cp backend/.env.example backend/.env || true
+          if [ -d backend/online_clinic_backend_db.sqlite3 ]; then
+            rm -rf backend/online_clinic_backend_db.sqlite3
+          fi
+          touch backend/online_clinic_backend_db.sqlite3
           
           # 4. Rebuild and start application containers
           docker compose -f docker-compose.yml up -d --build
