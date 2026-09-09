@@ -77,11 +77,9 @@ jobs:
             # 4. Pull pre-built images from GitHub Container Registry (takes seconds!)
             docker compose pull
             
-            # 5. Launch all services instantly
-            docker compose up -d
-            
-            # 6. Restart Celery to pick up latest state
-            docker compose restart celery_worker celery_beat
+            # 5. Launch all services cleanly with orphan cleanup
+            docker compose down --remove-orphans || true
+            docker compose up -d --remove-orphans
             
             # 7. Start / update monitoring stack
             docker compose -f devops/docker-compose.monitoring.yml up -d
