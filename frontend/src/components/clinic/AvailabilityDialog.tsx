@@ -1,19 +1,24 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useForm } from "react-hook-form";
 import DateObject from "react-date-object";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Plus } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 
-import { createRecurringAvailability } from "@/actions/clinic";
+import {
+	createRecurringAvailability,
+	updateRecurringAvailability,
+} from "@/actions/clinic";
 import { RecurringAvailabilitySchema } from "@/lib/validations";
 import {
 	APPOINTMENT_TYPES,
 	DAYS_OF_WEEK,
+	RecurringAvailability,
 	RecurringAvailabilityData,
 } from "@/types";
 
@@ -44,7 +49,30 @@ import {
 	FormMessage,
 } from "@/components/ui";
 
-export default function AvailabilityDialog() {
+interface AvailabilityDialogProps {
+	mode?: "create" | "edit";
+	availability?: RecurringAvailability;
+	open?: boolean;
+	onOpenChange?: (open: boolean) => void;
+	onSuccess?: () => void;
+	trigger?: React.ReactNode;
+}
+
+export default function AvailabilityDialog({
+	mode = "create",
+	availability,
+	open: controlledOpen,
+	onOpenChange: controlledOnOpenChange,
+	onSuccess,
+	trigger,
+}: AvailabilityDialogProps) {
+	const [internalOpen, setInternalOpen] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState(false);
+
+	const isControlled = controlledOpen !== undefined;
+	const open = isControlled ? controlledOpen : internalOpen;
+	const setOpen = isControlled ? controlledOnOpenChange : setInternalOpen;
+
 	const form = useForm<RecurringAvailabilityData>({
 		resolver: zodResolver(RecurringAvailabilitySchema),
 		defaultValues: {
@@ -60,18 +88,71 @@ export default function AvailabilityDialog() {
 		},
 	});
 
-	async function onSubmit(values: RecurringAvailabilityData) {
-		// Call the server action
-		const result = await createRecurringAvailability(values);
-
-		if (result.success) {
-			toast.success(result.message || "پذیرش جدید با موفقیت اضافه شد");
-			form.reset();
-			window.location.reload();
-			return;
+	// Synchronize form values on edit or open
+	useEffect(() => {
+		if (open) {
+			if (mode === "edit" && availability) {
+				form.reset({
+					dayOfWeek: String(availability.dayOfWeek),
+					startTime: availability.startTime.slice(0, 5),
+					endTime: availability.endTime.slice(0, 5),
+					priceIrr: String(availability.priceIrr),
+					durationMinutes: String(availability.durationMinutes),
+					appointmentType: availability.appointmentType,
+					validFrom: availability.validFrom
+						? new Date(availability.validFrom)
+						: undefined,
+					validUntil: availability.validUntil
+						? new Date(availability.validUntil)
+						: undefined,
+					isActive: availability.isActive,
+				});
+			} else if (mode === "create") {
+				form.reset({
+					dayOfWeek: "",
+					startTime: "",
+					endTime: "",
+					priceIrr: "",
+					durationMinutes: "",
+					appointmentType: "",
+					validFrom: undefined,
+					validUntil: undefined,
+					isActive: true,
+				});
+			}
 		}
+	}, [open, mode, availability, form]);
 
-		toast.error(result.message || "خطا در ثبت پذیرش");
+	async function onSubmit(values: RecurringAvailabilityData) {
+		setIsSubmitting(true);
+		try {
+			let result;
+			if (mode === "edit" && availability) {
+				result = await updateRecurringAvailability(
+					availability.id,
+					values,
+				);
+			} else {
+				result = await createRecurringAvailability(values);
+			}
+
+			if (result.success) {
+				toast.success(
+					result.message ||
+						(mode === "edit"
+							? "زمانبندی با موفقیت ویرایش شد"
+							: "پذیرش جدید با موفقیت اضافه شد"),
+				);
+				setOpen?.(false);
+				onSuccess?.();
+			} else {
+				toast.error(result.message || "خطا در ذخیره زمانبندی");
+			}
+		} catch {
+			toast.error("خطای غیرمنتظره رخ داد");
+		} finally {
+			setIsSubmitting(false);
+		}
 	}
 
 	const formatPersianDate = (date: Date | undefined) => {
@@ -85,13 +166,24 @@ export default function AvailabilityDialog() {
 	};
 
 	return (
-		<Dialog>
+		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<Button>افزودن روز</Button>
+				{trigger ? (
+					trigger
+				) : (
+					<Button className="gap-2">
+						<Plus className="size-4" />
+						افزودن روز
+					</Button>
+				)}
 			</DialogTrigger>
-			<DialogContent className="sm:max-w-[650px]">
+			<DialogContent className="sm:max-w-[650px]" dir="rtl">
 				<DialogHeader>
-					<DialogTitle>افزودن زمان‌بندی</DialogTitle>
+					<DialogTitle>
+						{mode === "edit"
+							? "ویرایش زمانبندی پذیرش"
+							: "افزودن زمانبندی جدید"}
+					</DialogTitle>
 				</DialogHeader>
 
 				<Form {...form}>
@@ -130,6 +222,7 @@ export default function AvailabilityDialog() {
 							)}
 						/>
 
+						{/* Start and End Times */}
 						<div className="grid grid-cols-2 gap-4">
 							<FormField
 								control={form.control}
@@ -168,6 +261,7 @@ export default function AvailabilityDialog() {
 							/>
 						</div>
 
+						{/* Price and Duration */}
 						<div className="grid grid-cols-2 gap-4">
 							<FormField
 								control={form.control}
@@ -204,6 +298,7 @@ export default function AvailabilityDialog() {
 							/>
 						</div>
 
+						{/* Appointment Type */}
 						<FormField
 							control={form.control}
 							name="appointmentType"
@@ -219,13 +314,15 @@ export default function AvailabilityDialog() {
 											</SelectTrigger>
 											<SelectContent>
 												<SelectGroup>
-													{APPOINTMENT_TYPES.map((t) => (
-														<SelectItem
-															key={t.value}
-															value={t.value}>
-															{t.label}
-														</SelectItem>
-													))}
+													{APPOINTMENT_TYPES.map(
+														(t) => (
+															<SelectItem
+																key={t.value}
+																value={t.value}>
+																{t.label}
+															</SelectItem>
+														),
+													)}
 												</SelectGroup>
 											</SelectContent>
 										</Select>
@@ -235,6 +332,7 @@ export default function AvailabilityDialog() {
 							)}
 						/>
 
+						{/* Date Ranges */}
 						<div className="grid grid-cols-2 gap-4">
 							<FormField
 								control={form.control}
@@ -267,7 +365,15 @@ export default function AvailabilityDialog() {
 													selected={field.value}
 													onSelect={field.onChange}
 													disabled={(date) =>
-														date < new Date()
+														date <
+														new Date(
+															new Date().setHours(
+																0,
+																0,
+																0,
+																0,
+															),
+														)
 													}
 												/>
 											</PopoverContent>
@@ -308,7 +414,15 @@ export default function AvailabilityDialog() {
 													selected={field.value}
 													onSelect={field.onChange}
 													disabled={(date) =>
-														date < new Date()
+														date <
+														new Date(
+															new Date().setHours(
+																0,
+																0,
+																0,
+																0,
+															),
+														)
 													}
 												/>
 											</PopoverContent>
@@ -319,6 +433,7 @@ export default function AvailabilityDialog() {
 							/>
 						</div>
 
+						{/* Is Active Switch */}
 						<FormField
 							control={form.control}
 							name="isActive"
@@ -338,14 +453,22 @@ export default function AvailabilityDialog() {
 							)}
 						/>
 
-						<div className="flex justify-end gap-2">
+						{/* Submit Buttons */}
+						<div className="flex justify-end gap-2 pt-2">
 							<Button
 								type="button"
 								variant="ghost"
-								onClick={() => form.reset()}>
-								بازنشانی
+								onClick={() => setOpen?.(false)}
+								disabled={isSubmitting}>
+								انصراف
 							</Button>
-							<Button type="submit">ذخیره</Button>
+							<Button type="submit" disabled={isSubmitting}>
+								{isSubmitting
+									? "در حال ذخیره..."
+									: mode === "edit"
+										? "ذخیره تغییرات"
+										: "ذخیره"}
+							</Button>
 						</div>
 					</form>
 				</Form>
