@@ -9,5 +9,9 @@ export {
 	cancelAppointment,
 } from "./appointments.action";
 export { verifyAppointmentPayment } from "./payment.action";
-export { getRecurringAvailability } from "./recurring-availability.action";
-export { createRecurringAvailability } from "./recurring-availability.action";
+export {
+	getRecurringAvailability,
+	createRecurringAvailability,
+	updateRecurringAvailability,
+	deleteRecurringAvailability,
+} from "./recurring-availability.action";
