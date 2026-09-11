@@ -6,3 +6,5 @@ export { default as useClickOutside } from "./useClickOutside";
 export { default as useRegisterForm } from "./useRegisterForm";
 export { default as useThemeSwitcher } from "./useThemeSwitcher";
 export { default as useLoginWithPasswordForm } from "./useLoginWithPasswordForm";
+export { default as useChangePasswordForm } from "./useChangePasswordForm";
+

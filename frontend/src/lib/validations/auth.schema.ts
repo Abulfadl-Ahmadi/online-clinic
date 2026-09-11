@@ -74,3 +74,25 @@ export const RegisterSchema = z
 		message: "رمز عبور و تکرار آن باید یکسان باشند",
 		path: ["confirmPassword"],
 	});
+
+export const ChangePasswordSchema = z
+	.object({
+		old_password: z
+			.string()
+			.min(1, "رمز عبور فعلی الزامی است"),
+		new_password: z
+			.string()
+			.min(8, "رمز عبور جدید باید حداقل ۸ کاراکتر باشد"),
+		confirm_new_password: z
+			.string()
+			.min(1, "تکرار رمز عبور جدید الزامی است"),
+	})
+	.refine((data) => data.new_password === data.confirm_new_password, {
+		message: "رمز عبور جدید و تکرار آن یکسان نیستند",
+		path: ["confirm_new_password"],
+	})
+	.refine((data) => data.old_password !== data.new_password, {
+		message: "رمز عبور جدید نمی‌تواند مشابه رمز عبور فعلی باشد",
+		path: ["new_password"],
+	});
+

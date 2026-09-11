@@ -4,13 +4,21 @@ import {
 	RegisterSchema,
 	SendOtpSchema,
 	VerifyOtpSchema,
+	ChangePasswordSchema,
 } from "@/lib/validations";
 
 export type LoginFormData = z.infer<typeof LoginSchema>;
 export type RegisterFormData = z.infer<typeof RegisterSchema>;
+export type ChangePasswordFormData = z.infer<typeof ChangePasswordSchema>;
 
 export type SendOtpFormData = z.infer<typeof SendOtpSchema>;
 export type VerifyOtpFormData = z.infer<typeof VerifyOtpSchema>;
+
+export interface ChangePasswordResult {
+	message: string;
+	success?: boolean;
+}
+
 
 export interface AuthResult {
 	access: string;
