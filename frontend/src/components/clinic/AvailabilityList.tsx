@@ -7,10 +7,14 @@ import { Calendar, AlertCircle } from "lucide-react";
 
 interface AvailabilityListProps {
 	availabilities: RecurringAvailability[] | null | undefined;
+	onUpdated?: () => void;
+	onDeleted?: () => void;
 }
 
 export default function AvailabilityList({
 	availabilities,
+	onUpdated,
+	onDeleted,
 }: AvailabilityListProps) {
 	if (availabilities === null || availabilities === undefined) {
 		return (
@@ -23,7 +27,7 @@ export default function AvailabilityList({
 								خطا در دریافت برنامه پذیرش
 							</h3>
 							<p className="text-sm text-muted-foreground">
-								خطایی در بارگیری زمان‌بندی رخ داده است.
+								خطایی در بارگیری زمانبندی رخ داده است.
 							</p>
 						</div>
 					</div>
@@ -38,10 +42,11 @@ export default function AvailabilityList({
 				<CardContent className="p-12 text-center flex flex-col items-center justify-center">
 					<Calendar className="size-12 mb-4 opacity-50" />
 					<h3 className="font-medium text-foreground mb-1">
-						هیچ زمان‌بندی پذیرشی یافت نشد
+						هیچ زمانبندی پذیرشی یافت نشد
 					</h3>
 					<p className="text-sm text-muted-foreground">
-						شما هنوز هیچ برنامه پذیرشی تعریف نکرده‌اید.
+						شما هنوز هیچ برنامه پذیرشی تعریف نکردهایداز دکمه افزودن
+						روز استفاده کنید.
 					</p>
 				</CardContent>
 			</Card>
@@ -54,6 +59,8 @@ export default function AvailabilityList({
 				<AvailabilityCard
 					key={availability.id}
 					availability={availability}
+					onUpdated={onUpdated}
+					onDeleted={onDeleted}
 				/>
 			))}
 		</div>

@@ -40,15 +40,22 @@ function AvailabilityPage() {
 		<div className="container mx-auto px-4 py-8" dir="rtl">
 			<header className="flex items-center justify-between mb-8 w-full">
 				<div>
-					<h1 className="text-3xl font-bold mb-2">پذیرش‌های من</h1>
+					<h1 className="text-3xl font-bold mb-2">پذیرشهای من</h1>
 					<p className="text-muted-foreground">
-						مدیریت و زمان‌بندی روزهای کاری و پذیرش بیماران
+						مدیریت و زمانبندی روزهای کاری و پذیرش بیماران
 					</p>
 				</div>
-				<AvailabilityDialog />
+				<AvailabilityDialog
+					mode="create"
+					onSuccess={loadRecurringAvailabilities}
+				/>
 			</header>
 
-			<AvailabilityList availabilities={recurringAvailabilities} />
+			<AvailabilityList
+				availabilities={recurringAvailabilities}
+				onUpdated={loadRecurringAvailabilities}
+				onDeleted={loadRecurringAvailabilities}
+			/>
 		</div>
 	);
 }
