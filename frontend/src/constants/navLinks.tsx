@@ -14,6 +14,7 @@ import {
 	PenSquareIcon,
 	FolderIcon,
 	TagIcon,
+	KeyRoundIcon,
 } from "lucide-react";
 
 export const publicLinks: NavLink[] = [
@@ -35,7 +36,13 @@ export const basePrivateLinks: NavLink[] = [
 		label: "پروفایل",
 		icon: <UserCircleIcon />,
 	},
+	{
+		href: "/user/change-password",
+		label: "تغییر رمز عبور",
+		icon: <KeyRoundIcon />,
+	},
 ];
+
 
 export const userLinks: NavLink[] = [
 	...basePrivateLinks,
@@ -95,5 +102,10 @@ export const adminLinks: NavLink[] = [
 		href: "/admin/articles/tags",
 		label: "تگ‌ها",
 		icon: <TagIcon />,
+	},
+	{
+		href: "/user/change-password",
+		label: "تغییر رمز عبور",
+		icon: <KeyRoundIcon />,
 	},
 ];

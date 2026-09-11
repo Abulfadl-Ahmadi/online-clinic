@@ -7,6 +7,7 @@ import {
 	UserIcon,
 	UserCircleIcon,
 	LogOutIcon,
+	KeyRound,
 } from "lucide-react";
 
 import { useLogout } from "@/hooks";
@@ -128,6 +129,15 @@ function UserMenu({ showName = false, className }: UserMenuProps) {
 						className="w-full cursor-pointer flex items-center">
 						<UserCircleIcon className="me-2 size-4 hover:text-primary" />
 						پروفایل
+					</Link>
+				</DropdownMenuItem>
+
+				<DropdownMenuItem asChild>
+					<Link
+						href="/user/change-password"
+						className="w-full cursor-pointer flex items-center">
+						<KeyRound className="me-2 size-4 hover:text-primary" />
+						تغییر رمز عبور
 					</Link>
 				</DropdownMenuItem>
 

@@ -6,6 +6,7 @@ import {
 	BadgeCheckIcon,
 	IdCardIcon,
 	LanguagesIcon,
+	KeyRound,
 } from "lucide-react";
 
 import { useUser } from "@/context";
@@ -16,6 +17,7 @@ import {
 	getRoleBadge,
 	getThemeIcon,
 } from "@/components/user";
+import { ChangePasswordForm } from "@/components/forms";
 import {
 	Avatar,
 	AvatarFallback,
@@ -27,6 +29,7 @@ import {
 	CardContent,
 	Separator,
 } from "@/components/ui";
+
 
 function UserProfilePage() {
 	const { isLoading, isAuthenticated, user, userRole } = useUser();
@@ -180,8 +183,25 @@ function UserProfilePage() {
 					</div> */}
 				</CardContent>
 			</Card>
+
+			{/* Security & Password Change */}
+			<Card className="shadow-sm border-border" id="change-password">
+				<CardHeader>
+					<CardTitle className="text-lg font-semibold flex items-center gap-2">
+						<KeyRound className="size-5 text-primary" />
+						تغییر رمز عبور
+					</CardTitle>
+					<p className="text-sm text-muted-foreground">
+						برای افزایش امنیت حساب کاربری خود، می‌توانید در این بخش رمز عبور جدید تعیین کنید.
+					</p>
+				</CardHeader>
+				<CardContent>
+					<ChangePasswordForm />
+				</CardContent>
+			</Card>
 		</div>
 	);
 }
 
 export default UserProfilePage;
+
