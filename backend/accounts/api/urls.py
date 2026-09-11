@@ -6,6 +6,7 @@ from .views import (
     SettingsAPIView,
     DoctorViewSet,
     SpecializationViewSet,
+    ChangePasswordAPIView,
 )
 
 
@@ -20,6 +21,7 @@ urlpatterns = [
     path(f"{base}/", UserAPIView.as_view(), name=f"{base}"),
     path(f"{base}/profile/", ProfileAPIView.as_view(), name=f"{base}-profile"),
     path(f"{base}/settings/", SettingsAPIView.as_view(), name=f"{base}-settings"),
+    path(f"{base}/change-password/", ChangePasswordAPIView.as_view(), name=f"{base}-change-password"),
     # doctors and specializations - include router with trailing slash
     path("", include(router.urls)),
 ]

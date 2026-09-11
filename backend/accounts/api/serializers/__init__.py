@@ -3,3 +3,5 @@ from .profile_serializer import ProfileSerializer
 from .settings_serializer import SettingsSerializer
 from .doctor_profile_serializer import DoctorProfileSerializer
 from .specialization_serializer import SpecializationSerializer
+from .change_password_serializer import ChangePasswordSerializer
+
