@@ -76,10 +76,20 @@ const iranYekanX = localFont({
 
 export async function generateMetadata(): Promise<Metadata> {
 	return {
-		applicationName: "Online Clinic",
+		metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
+		applicationName: "کلینیک فیزیوتراپی دکتر عباس رحیمی",
 		title: {
-			default: "کلینک آنلاین",
-			template: "کلینک آنلاین | %s",
+			default: "کلینیک فیزیوتراپی دکتر عباس رحیمی",
+			template: "%s | کلینیک فیزیوتراپی دکتر عباس رحیمی",
+		},
+		description: "کلینیک فیزیوتراپی دکتر عباس رحیمی در پیروزی تهران؛ ارزیابی و توان‌بخشی مبتنی بر شواهد برای بازگشت آگاهانه به حرکت.",
+		keywords: ["فیزیوتراپی", "دکتر عباس رحیمی", "توان‌بخشی", "آسیب ورزشی", "فیزیوتراپی پیروزی"],
+		openGraph: {
+			type: "website",
+			locale: "fa_IR",
+			title: "کلینیک فیزیوتراپی دکتر عباس رحیمی",
+			description: "بازگشت به حرکت، با پشتوانهٔ علم.",
+			images: [{ url: "/images/brand/dr-abbas-rahimi-hero.png", width: 1672, height: 941, alt: "دکتر عباس رحیمی در فضای کلینیک" }],
 		},
 	};
 }
