@@ -2,81 +2,47 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
-import { X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
+import { Reveal, Stagger, StaggerItem } from '@/components/motion/Reveal';
 
 interface ClinicGalleryProps {
   images: string[];
   title?: string;
+  locale?: 'fa' | 'en';
 }
 
-export function ClinicGallery({ images, title }: ClinicGalleryProps) {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+export function ClinicGallery({ images, title, locale = 'fa' }: ClinicGalleryProps) {
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const en = locale === 'en';
 
   return (
-    <section className="w-full py-12 px-4 md:px-8 bg-background">
-      <div className="max-w-6xl mx-auto">
-        {title && (
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-2 text-foreground">
-            {title}
-          </h2>
-        )}
-        <p className="text-center text-muted-foreground mb-12">
-          نگاهی به بخش‌های مختلف کلینیک ما
-        </p>
-
-        {/* Gallery Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+    <section className="brand-soft-section px-4 py-20 sm:py-24" aria-labelledby="clinic-gallery-title">
+      <div className="mx-auto max-w-7xl">
+        <Reveal className="max-w-2xl">
+          <p className="brand-overline">{en ? 'INSIDE THE CLINIC' : 'نگاهی به فضای درمان'}</p>
+          <h2 id="clinic-gallery-title" className="mt-3 text-3xl font-extrabold text-[var(--brand-ink)] sm:text-4xl">{title ?? (en ? 'Explore the clinic' : 'فضای کلینیک')}</h2>
+          <p className="mt-4 leading-8 text-[var(--brand-muted)]">{en ? 'Take a closer look at our treatment spaces. Select an image to enlarge it.' : 'تصاویر بخش‌های مختلف کلینیک را ببینید. برای نمایش بزرگ‌تر، روی هر تصویر بزنید.'}</p>
+        </Reveal>
+        <Stagger className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" stagger={0.04}>
           {images.map((image, index) => (
-            <div
-              key={index}
-              className="group relative overflow-hidden rounded-lg border border-border shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer bg-card aspect-video"
-              onClick={() => setSelectedImage(image)}
-            >
-              <Image
-                src={image}
-                alt={`تصویر کلینیک ${index + 1}`}
-                fill
-                className="object-cover group-hover:scale-110 transition-transform duration-300"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                >
-                  نمایش بزرگتر
-                </Button>
-              </div>
-            </div>
+            <StaggerItem key={image}>
+              <button type="button" onClick={() => setSelectedIndex(index)} aria-label={en ? `Enlarge clinic photo ${index + 1}` : `نمایش بزرگ‌تر تصویر ${index + 1} از فضای کلینیک`} className="brand-link-ring group relative block aspect-[4/3] w-full cursor-zoom-in overflow-hidden rounded-2xl border border-[var(--brand-line)] bg-[var(--brand-soft)] text-start">
+                <Image src={image} alt={en ? `View ${index + 1} of Dr. Rahimi's physiotherapy clinic` : `نمای ${index + 1} از فضای کلینیک فیزیوتراپی دکتر رحیمی`} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover transition-transform duration-300 group-hover:scale-[1.04]" />
+                <span className="absolute bottom-3 end-3 rounded-lg bg-[#123e46]/90 px-3 py-2 text-sm font-bold text-white">{en ? 'Enlarge' : 'نمایش بزرگ‌تر'}</span>
+              </button>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       </div>
-
-      {/* Modal for full-size image */}
-      {selectedImage && (
-        <div
-          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
-          onClick={() => setSelectedImage(null)}
-        >
-          <div className="relative max-w-4xl w-full max-h-96 md:max-h-screen">
-            <button
-              onClick={() => setSelectedImage(null)}
-              className="absolute -top-10 right-0 text-white hover:text-muted-foreground transition-colors"
-            >
-              <X size={28} />
-            </button>
-            <Image
-              src={selectedImage}
-              alt="تصویر تمام‌صفحه"
-              width={1200}
-              height={800}
-              className="w-full h-auto rounded-lg"
-            />
-          </div>
-        </div>
-      )}
+      <Dialog open={selectedIndex !== null} onOpenChange={open => { if (!open) setSelectedIndex(null); }}>
+        <DialogContent dir={en ? 'ltr' : 'rtl'} className="w-[min(95vw,72rem)] max-w-none border-[var(--brand-line)] bg-[var(--brand-surface)] p-3 sm:p-5">
+          <DialogTitle className="pe-8 text-[var(--brand-ink)]">{en ? 'Inside Dr. Rahimi’s physiotherapy clinic' : 'فضای کلینیک فیزیوتراپی دکتر رحیمی'}</DialogTitle>
+          <DialogDescription className="sr-only">{en ? 'Enlarged clinic photo. Press Escape or the close button to return to the gallery.' : 'تصویر بزرگ‌شده از فضای کلینیک. با کلید Escape یا دکمه بستن به گالری بازگردید.'}</DialogDescription>
+          {selectedIndex !== null && <div className="relative aspect-[4/3] max-h-[75vh] w-full overflow-hidden rounded-xl bg-[var(--brand-soft)] sm:aspect-[3/2]">
+            <Image src={images[selectedIndex]} alt={en ? `View ${selectedIndex + 1} of Dr. Rahimi's physiotherapy clinic` : `نمای ${selectedIndex + 1} از فضای کلینیک فیزیوتراپی دکتر رحیمی`} fill sizes="95vw" className="object-contain" />
+          </div>}
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }
