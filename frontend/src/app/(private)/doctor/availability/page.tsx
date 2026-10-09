@@ -13,21 +13,30 @@ function AvailabilityPage() {
 
 	const [recurringAvailabilities, setRecurringAvailabilities] = useState<
 		RecurringAvailability[] | null | undefined
-	>([]);
+	>(undefined);
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		loadRecurringAvailabilities();
-	}, []);
+		if (!isLoading && isAuthenticated && user) void loadRecurringAvailabilities();
+	}, [isLoading, isAuthenticated, user]);
 
 	const loadRecurringAvailabilities = async () => {
-		const result = await getRecurringAvailability();
-
-		if (result.success) {
-			setRecurringAvailabilities(result.data.results);
+		setLoading(true);
+		try {
+			const result = await getRecurringAvailability();
+			setRecurringAvailabilities(result.success ? result.data.results : null);
+		} catch {
+			setRecurringAvailabilities(null);
+		} finally {
+			setLoading(false);
 		}
 	};
 
-	if ((!isLoading && !isAuthenticated) || !user) {
+	if (isLoading) {
+		return <div role="status" className="p-6 text-muted-foreground">در حال بررسی حساب کاربری…</div>;
+	}
+
+	if (!isAuthenticated || !user) {
 		return (
 			<div className="flex flex-col items-center justify-center h-full">
 				<p className="text-lg font-medium">
@@ -40,9 +49,9 @@ function AvailabilityPage() {
 		<div className="container mx-auto px-4 py-8" dir="rtl">
 			<header className="flex items-center justify-between mb-8 w-full">
 				<div>
-					<h1 className="text-3xl font-bold mb-2">پذیرشهای من</h1>
+					<h1 className="text-3xl font-bold mb-2">برنامهٔ پذیرش من</h1>
 					<p className="text-muted-foreground">
-						مدیریت و زمانبندی روزهای کاری و پذیرش بیماران
+						مدیریت و زمان‌بندی روزهای کاری و پذیرش بیماران
 					</p>
 				</div>
 				<AvailabilityDialog
@@ -52,6 +61,8 @@ function AvailabilityPage() {
 			</header>
 
 			<AvailabilityList
+				loading={loading}
+				onRetry={loadRecurringAvailabilities}
 				availabilities={recurringAvailabilities}
 				onUpdated={loadRecurringAvailabilities}
 				onDeleted={loadRecurringAvailabilities}

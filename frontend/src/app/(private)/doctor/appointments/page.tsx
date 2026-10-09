@@ -11,6 +11,9 @@ function DoctorAppointmentsPage() {
 		allAppointments,
 		upcomingAppointments,
 		loading,
+		allError,
+		upcomingError,
+		retry,
 		page,
 		hasNext,
 		hasPrevious,
@@ -22,9 +25,13 @@ function DoctorAppointmentsPage() {
 		cancelling,
 		openCancelDialog,
 		confirmCancel,
-	} = useAppointments();
+	} = useAppointments(!isLoading && isAuthenticated && Boolean(user));
 
-	if ((!isLoading && !isAuthenticated) || !user) {
+	if (isLoading) {
+		return <div role="status" className="p-6 text-muted-foreground">در حال بررسی حساب کاربری…</div>;
+	}
+
+	if (!isAuthenticated || !user) {
 		return (
 			<div className="flex flex-col items-center justify-center h-full">
 				<p className="text-lg font-medium">
@@ -48,6 +55,9 @@ function DoctorAppointmentsPage() {
 				upcomingAppointments={upcomingAppointments}
 				allAppointments={allAppointments}
 				loading={loading}
+				allError={allError}
+				upcomingError={upcomingError}
+				onRetry={retry}
 				onCancel={openCancelDialog}
 				page={page}
 				hasNext={hasNext}
