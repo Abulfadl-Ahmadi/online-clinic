@@ -53,14 +53,20 @@ input, textarea, select {
 	text-align: right;
 }
 
+/* Keep public English form controls readable when opened in an LTR section. */
+.brand-page[lang="en"] :is(input, textarea, select) {
+	direction: ltr;
+	text-align: left;
+}
+
 /* RTL-aware scrollbar */
 * {
 	scrollbar-width: thin;
-	scrollbar-color: var(--muted-foreground/30) transparent;
+	scrollbar-color: color-mix(in srgb, var(--muted-foreground) 30%, transparent) transparent;
 }
 
 *:hover {
-	scrollbar-color: var(--muted-foreground/50) transparent;
+	scrollbar-color: color-mix(in srgb, var(--muted-foreground) 50%, transparent) transparent;
 }
 
 @custom-variant dark (&:is(.dark *));
@@ -68,8 +74,8 @@ input, textarea, select {
 :root {
 	--radius: 0.625rem;
 
-	--background: oklch(97.1% 0.0015 277.7);
-	--foreground: oklch(35.3% 0.0139 277.7);
+	--background: #f7faf9;
+	--foreground: #263b3e;
 
 	--card: oklch(1 0 0);
 	--card-foreground: oklch(34.769% 0.01385 285.625);
@@ -77,7 +83,7 @@ input, textarea, select {
 	--popover: oklch(1 0 0);
 	--popover-foreground: oklch(34.769% 0.01385 285.625);
 
-	--primary: oklch(0.5433 0.1913 266.76);
+	--primary: #123e46;
 	--primary-foreground: oklch(0.985 0 0);
 
 	--secondary: oklch(94.912% 0.00011 271.152);
@@ -108,7 +114,7 @@ input, textarea, select {
 
 	--sidebar: oklch(1 0 0);
 	--sidebar-foreground: oklch(50.3% 0.0139 277.7);
-	--sidebar-primary: oklch(0.5433 0.1913 266.76);
+	--sidebar-primary: #123e46;
 	--sidebar-primary-foreground: oklch(0.969 0.0132 262.38);
 
 	--sidebar-accent: oklch(0.969 0.0132 262.38);
@@ -121,8 +127,8 @@ input, textarea, select {
 }
 
 .dark {
-	--background: oklch(17.8% 0.0042 277.7);
-	--foreground: oklch(95% 0.0026 277.7);
+	--background: #0b1d22;
+	--foreground: #e7f1ef;
 
 	--card: oklch(21.5% 0.004 277.7);
 	--card-foreground: oklch(95% 0.0026 277.7);
@@ -130,8 +136,8 @@ input, textarea, select {
 	--popover: oklch(21.5% 0.004 277.7);
 	--popover-foreground: oklch(77% 0.0138 277.7);
 
-	--primary: oklch(0.5433 0.1913 266.76);
-	--primary-foreground: oklch(0.985 0 0);
+	--primary: #b8ded7;
+	--primary-foreground: #09252b;
 
 	--secondary: oklch(0.269 0 0);
 	--secondary-foreground: oklch(0.985 0 0);
@@ -161,8 +167,8 @@ input, textarea, select {
 
 	--sidebar: oklch(21.5% 0.004 277.7);
 	--sidebar-foreground: oklch(77% 0.0138 277.7);
-	--sidebar-primary: oklch(0.5433 0.1913 266.76);
-	--sidebar-primary-foreground: oklch(0.985 0 0);
+	--sidebar-primary: #b8ded7;
+	--sidebar-primary-foreground: #09252b;
 
 	--sidebar-accent: oklch(0.269 0 0);
 	--sidebar-accent-foreground: oklch(95% 0.0026 277.7);
@@ -177,8 +183,8 @@ input, textarea, select {
 	--color-background: var(--background);
 	--color-foreground: var(--foreground);
 
-	--font-sans: var(--font-geist-sans);
-	--font-mono: var(--font-geist-mono);
+	--font-sans: var(--font-iran-yekan-x);
+	--font-mono: ui-monospace, SFMono-Regular, monospace;
 
 	--color-sidebar-ring: var(--sidebar-ring);
 	--color-sidebar-border: var(--sidebar-border);
@@ -237,5 +243,155 @@ input, textarea, select {
 	}
 	body {
 		@apply bg-background text-foreground;
+	}
+}
+
+/* Public-facing visual identity for Dr. Rahimi's clinic. This is deliberately
+   scoped so dashboard and administration screens retain their existing theme. */
+.brand-page {
+	--brand-page: #fbfcfb;
+	--brand-ink: #123e46;
+	--brand-teal: #4b8a83;
+	--brand-mist: #edf5f3;
+	--brand-wine: #74364b;
+	--brand-charcoal: #263238;
+	--brand-copy: #415357;
+	--brand-muted: #526468;
+	--brand-surface: #ffffff;
+	--brand-soft: #e7f2f0;
+	--brand-line: color-mix(in srgb, var(--brand-ink) 12%, transparent);
+	--brand-shadow: color-mix(in srgb, var(--brand-ink) 18%, transparent);
+	--brand-image-overlay: color-mix(in srgb, var(--brand-ink) 82%, transparent);
+	--brand-dark-accent: #b8ded7;
+	color: var(--brand-charcoal);
+	background: var(--brand-page);
+	font-family: var(--font-iran-yekan-x), sans-serif;
+}
+
+.brand-page h1, .brand-page h2, .brand-page h3 {
+	font-family: var(--font-peyda), var(--font-iran-yekan-x), sans-serif;
+}
+
+.dark .brand-page {
+	--brand-page: #0b1d22;
+	--brand-ink: #d9f0eb;
+	--brand-teal: #7fc4b8;
+	--brand-mist: #122b31;
+	--brand-wine: #e1a7b6;
+	--brand-charcoal: #e7f1ef;
+	--brand-copy: #c6d7d3;
+	--brand-muted: #a8beb9;
+	--brand-surface: #16343a;
+	--brand-soft: #204850;
+	--brand-line: color-mix(in srgb, white 17%, transparent);
+	--brand-shadow: rgba(0, 0, 0, .45);
+	--brand-image-overlay: rgba(4, 20, 24, .86);
+	--brand-dark-accent: #b8ded7;
+	background: var(--brand-page);
+}
+
+.brand-page :is(a, button, input, textarea, select):focus-visible {
+	outline: 3px solid var(--brand-teal);
+	outline-offset: 3px;
+}
+
+.brand-page ::selection {
+	background: color-mix(in srgb, var(--brand-teal) 28%, white);
+	color: var(--brand-ink);
+}
+
+.brand-grid {
+	background-image:
+		linear-gradient(to right, color-mix(in srgb, var(--brand-ink) 7%, transparent) 1px, transparent 1px),
+		linear-gradient(to bottom, color-mix(in srgb, var(--brand-ink) 7%, transparent) 1px, transparent 1px);
+	background-size: 44px 44px;
+}
+
+.brand-motion-field {
+	background-image:
+		linear-gradient(90deg, color-mix(in srgb, var(--brand-page) 94%, transparent), color-mix(in srgb, var(--brand-page) 56%, transparent)),
+		url('/images/brand/motion-path-texture.png');
+	background-size: cover;
+	background-position: center;
+}
+
+
+/* Existing public pages use a few explicit Tailwind color utilities. Keep those
+   legacy utility usages legible until they are fully migrated to brand tokens. */
+.dark .brand-page .bg-white, .dark .brand-page .bg-white\/70, .dark .brand-page .bg-white\/75, .dark .brand-page .bg-white\/90 { background-color: var(--brand-surface); }
+.dark .brand-page .bg-\[\#fffafa\], .dark .brand-page .bg-\[\#e7f2f0\], .dark .brand-page .bg-\[\#e1f0ec\] { background-color: var(--brand-soft); }
+.dark .brand-page .text-\[\#74364b\] { color: var(--brand-wine); }
+.dark .brand-page .text-\[\#4b8a83\] { color: var(--brand-teal); }
+.dark .brand-page .bg-\[\#4b8a83\] { background-color: #286158; }
+.dark .brand-page .bg-\[\#edf5f3\] { background-color: var(--brand-mist); }
+.dark .brand-page .border-white\/70 { border-color: var(--brand-line); }
+.dark .brand-page .border-\[\#74364b\]\/15 { border-color: var(--brand-line); }
+.dark .brand-page .bg-\[\#123e46\] { background-color: #0d2a30; }
+.dark .brand-page .text-\[\#123e46\] { color: var(--brand-ink); }
+.dark .brand-page :is(a, button).bg-\[\#123e46\] { background-color: #b8ded7; color: #09252b; }
+.dark .brand-page :is(a, button).bg-\[\#123e46\]:hover { background-color: #d9f0eb; }
+.dark .brand-page :is(a, button).bg-white { background-color: #f2faf8; color: #123e46; }
+.dark .brand-page :is(a, button).bg-white\/70 { background-color: var(--brand-surface); color: var(--brand-ink); }
+.dark .brand-page .text-\[\#415357\] { color: var(--brand-copy); }
+.dark .brand-page .text-\[\#526468\], .dark .brand-page .text-\[\#596a6d\] { color: var(--brand-muted); }
+.dark .brand-page .border-\[\#123e46\]\/10, .dark .brand-page .border-\[\#123e46\]\/15 { border-color: var(--brand-line); }
+
+.brand-card {
+	border: 1px solid var(--brand-line);
+	background: color-mix(in srgb, var(--brand-surface) 92%, transparent);
+	box-shadow: 0 1px 0 color-mix(in srgb, white 12%, transparent) inset, 0 18px 42px -32px var(--brand-shadow);
+	transition: transform 280ms cubic-bezier(.16, 1, .3, 1), border-color 280ms cubic-bezier(.16, 1, .3, 1), box-shadow 280ms cubic-bezier(.16, 1, .3, 1);
+}
+.brand-card:hover { transform: translateY(-6px); border-color: color-mix(in srgb, var(--brand-teal) 55%, transparent); box-shadow: 0 24px 54px -34px var(--brand-shadow); }
+.brand-soft-section { background: var(--brand-mist); }
+.brand-dark-section { background: #123e46; color: white; }
+.dark .brand-dark-section { background: #0d2a30; }
+.brand-dark-card { border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.09); backdrop-filter: blur(14px); }
+.brand-button-primary { color: white; background: #123e46; box-shadow: 0 18px 30px -20px var(--brand-shadow); transition: transform 280ms cubic-bezier(.16, 1, .3, 1), filter 280ms cubic-bezier(.16, 1, .3, 1); }
+.dark .brand-button-primary { color: #09252b; background: #b8ded7; }
+.brand-button-primary:hover { transform: translateY(-2px); filter: brightness(.92); }
+.brand-button-secondary { color: var(--brand-ink); border: 1px solid var(--brand-line); background: color-mix(in srgb, var(--brand-surface) 78%, transparent); backdrop-filter: blur(16px); }
+.brand-portrait-frame { border: 1px solid color-mix(in srgb, white 68%, transparent); background: color-mix(in srgb, var(--brand-surface) 24%, transparent); }
+.brand-float-card { border: 1px solid color-mix(in srgb, white 55%, transparent); background: color-mix(in srgb, var(--brand-surface) 86%, transparent); box-shadow: 0 24px 45px -26px var(--brand-shadow); backdrop-filter: blur(18px) saturate(1.25); }
+.brand-orb { width: 22rem; height: 22rem; border-radius: 999px; filter: blur(54px); opacity: .22; animation: brand-drift 15s ease-in-out infinite alternate; }
+.brand-orb-start { inset-inline-start: -8rem; top: 16%; background: var(--brand-teal); }
+.brand-orb-end { inset-inline-end: -7rem; top: -5rem; background: var(--brand-wine); animation-delay: -6s; }
+
+@keyframes brand-drift { from { transform: translate3d(0,0,0) scale(.92); } to { transform: translate3d(3rem,1.5rem,0) scale(1.08); } }
+
+.brand-overline {
+	letter-spacing: 0.08em;
+	font-size: 0.75rem;
+	font-weight: 700;
+	color: var(--brand-wine);
+}
+
+.brand-skip-link {
+	position: fixed;
+	z-index: 100;
+	inset-block-start: .75rem;
+	inset-inline-start: .75rem;
+	transform: translateY(-180%);
+	border-radius: .75rem;
+	background: var(--brand-surface, #fff);
+	color: var(--brand-ink, #123e46);
+	padding: .75rem 1rem;
+	font-weight: 700;
+	box-shadow: 0 6px 20px rgba(0, 0, 0, .18);
+}
+.brand-skip-link:focus-visible { transform: translateY(0); outline: 3px solid var(--brand-teal, #4b8a83); outline-offset: 2px; }
+#main-content { scroll-margin-top: 6rem; }
+
+.brand-link-ring:focus-visible {
+	outline: 3px solid color-mix(in srgb, var(--brand-teal) 45%, white);
+	outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*, *::before, *::after {
+		scroll-behavior: auto !important;
+		transition-duration: 0.01ms !important;
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
 	}
 }
