@@ -13,8 +13,9 @@ function NavMenuButton(props: Props) {
 			<Button
 				onClick={props.onClick}
 				variant={"outline"}
-				className="aspect-square"
-				size={"icon-sm"}>
+				aria-label="باز کردن فهرست راهبری"
+				className="size-11"
+				size={"icon"}>
 				<MenuIcon />
 			</Button>
 		</div>

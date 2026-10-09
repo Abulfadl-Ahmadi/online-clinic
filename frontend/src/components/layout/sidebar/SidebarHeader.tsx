@@ -25,7 +25,8 @@ const SidebarHeader = (props: Props) => {
 				size={"icon"}
 				variant={"ghost"}
 				onClick={props.onClose}
-				className="p-0 shrink-0">
+				aria-label="بستن فهرست راهبری"
+				className="size-11 shrink-0">
 				<XIcon className="text-muted-foreground size-6" />
 			</Button>
 		</motion.div>

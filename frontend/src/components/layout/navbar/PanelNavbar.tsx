@@ -21,12 +21,11 @@ function PanelNavbar() {
         	flex items-center justify-between gap-4">
 			<LogoType />
 
-			<div className="hidden md:block">
+			<div className="flex items-center gap-2">
 				<ThemeSwitcher />
-			</div>
-
-			<div className="block md:hidden">
-				<NavMenuButton onClick={() => handleSidebarStatus(true)} />
+				<div className="md:hidden">
+					<NavMenuButton onClick={() => handleSidebarStatus(true)} />
+				</div>
 			</div>
 
 			<PanelSidebarSheet
