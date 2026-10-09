@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { getDoctors } from "@/actions/clinic";
 import {
 	// Search,
@@ -18,34 +18,41 @@ import {
 
 export default function DoctorsPage() {
 	const [loading, setLoading] = useState(true);
+	const [loadError, setLoadError] = useState(false);
 	const [doctors, setDoctors] = useState<DoctorProfile[]>([]);
 	// const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
 	const [hasNext, setHasNext] = useState(false);
 	const [totalPages, setTotalPages] = useState(1);
 	const [hasPrevious, setHasPrevious] = useState(false);
+	const requestId = useRef(0);
 
 	useEffect(() => {
-		loadDoctors();
+		void loadDoctors();
+		return () => { requestId.current += 1; };
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [page]);
 
 	const loadDoctors = async () => {
+		const currentRequest = ++requestId.current;
 		setLoading(true);
-		const result = await getDoctors(
-			page,
-			true,
-			// , search
-		);
-
-		if (result.success) {
-			setDoctors(result.data.results);
-			setHasNext(!!result.data.next);
-			setHasPrevious(!!result.data.previous);
-			setTotalPages(Math.ceil(result.data.count / 10));
+		setLoadError(false);
+		try {
+			const result = await getDoctors(page, true);
+			if (currentRequest !== requestId.current) return;
+			if (result.success) {
+				setDoctors(result.data.results);
+				setHasNext(!!result.data.next);
+				setHasPrevious(!!result.data.previous);
+				setTotalPages(Math.max(1, Math.ceil(result.data.count / 10)));
+			} else {
+				setLoadError(true);
+			}
+		} catch {
+			if (currentRequest === requestId.current) setLoadError(true);
+		} finally {
+			if (currentRequest === requestId.current) setLoading(false);
 		}
-
-		setLoading(false);
 	};
 
 	// const handleSearch = () => {
@@ -92,6 +99,11 @@ export default function DoctorsPage() {
 						<Skeleton key={i} className="h-[350px]" />
 					))}
 				</div>
+			) : loadError ? (
+				<div className="flex flex-col items-center gap-4 py-12 text-center" role="alert">
+					<p className="text-muted-foreground">دریافت فهرست پزشکان ممکن نشد. اتصال خود را بررسی کنید و دوباره تلاش کنید.</p>
+					<Button variant="outline" onClick={() => void loadDoctors()}>تلاش دوباره</Button>
+				</div>
 			) : doctors.length === 0 ? (
 				<div className="text-center py-12">
 					<p className="text-muted-foreground">پزشکی یافت نشد</p>
@@ -110,6 +122,7 @@ export default function DoctorsPage() {
 							<Button
 								variant="outline"
 								size="icon"
+								aria-label="صفحه قبل"
 								onClick={() => setPage((p) => p - 1)}
 								disabled={!hasPrevious}>
 								<ChevronRight className="size-4" />
@@ -120,6 +133,7 @@ export default function DoctorsPage() {
 							<Button
 								variant="outline"
 								size="icon"
+								aria-label="صفحه بعد"
 								onClick={() => setPage((p) => p + 1)}
 								disabled={!hasNext}>
 								<ChevronLeft className="size-4" />
