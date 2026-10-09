@@ -5,8 +5,8 @@ import { NavManager } from "@/components/layout";
 
 export async function generateMetadata(): Promise<Metadata> {
 	return {
-		title: "درباره ما",
-		description: "درباره کلینک آنلاین",
+		title: "دکتر عباس رحیمی | فیزیوتراپیست و متخصص توان‌بخشی",
+		description: "معرفی سوابق علمی و حرفه‌ای دکتر عباس رحیمی، فیزیوتراپیست و مدیر کلینیک فیزیوتراپی دکتر رحیمی در تهران.",
 	};
 }
 
@@ -14,7 +14,7 @@ function AboutUsLayout({ children }: Readonly<PropsWithChildren>) {
 	return (
 		<Fragment>
 			<NavManager />
-			<main className="flex-1">{children}</main>
+			<main id="main-content" tabIndex={-1} className="flex-1">{children}</main>
 		</Fragment>
 	);
 }

@@ -135,7 +135,7 @@ export function Resume() {
               <ul className="space-y-2 text-muted-foreground text-sm">
                 <li>• Akhtar Orthopedic Hospital</li>
                 <li>• Yasarer Spinal Cord Rehabilitation Hospital</li>
-                <li>• Supervised 55+ Master's and PhD theses</li>
+                <li>• Supervised 55+ {"Master's"} and PhD theses</li>
                 <li>• Published ~100 international peer-reviewed articles</li>
               </ul>
             </CardContent>
