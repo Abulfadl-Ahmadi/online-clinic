@@ -15,14 +15,13 @@ import {
 	TabsContent,
 	CardDescription,
 	CardFooter,
-	Button,
 } from "@/components/ui";
 
 function LoginForm() {
 	return (
 		<Card className="w-full max-w-xs shadow-xl">
 			<CardHeader className="text-center">
-				<CardTitle>ورود</CardTitle>
+				<CardTitle><h1 className="text-xl font-bold">ورود به حساب کاربری</h1></CardTitle>
 				<CardDescription>
 					جهت ادامه، لطفا اطلاعات زیر را کامل کنید.
 				</CardDescription>

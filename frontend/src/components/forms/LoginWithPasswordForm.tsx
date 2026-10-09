@@ -30,7 +30,6 @@ function LoginWithPasswordForm() {
 							<FormLabel>شماره تلفن</FormLabel>
 							<FormControl>
 								<Input
-									autoFocus
 									placeholder="09xxxxxxxxx"
 									{...field}
 									type="tel"

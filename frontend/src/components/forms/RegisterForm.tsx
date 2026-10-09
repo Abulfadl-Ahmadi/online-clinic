@@ -34,7 +34,7 @@ function RegisterForm() {
 	return (
 		<Card className="w-full max-w-xs">
 			<CardHeader className="flex flex-col items-center justify-center text-center gap-1">
-				<CardTitle>ثبت‌نام</CardTitle>
+				<CardTitle><h1 className="text-xl font-bold">ثبت‌نام در کلینیک</h1></CardTitle>
 				<CardDescription>
 					اطلاعات زیر را برای ثبت‌نام وارد کنید
 				</CardDescription>
