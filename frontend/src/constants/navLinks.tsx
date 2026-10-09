@@ -2,7 +2,6 @@ import { NavLink } from "@/types";
 import {
 	HomeIcon,
 	InfoIcon,
-	SheetIcon,
 	BookOpenIcon,
 	LayoutDashboardIcon,
 	UserCogIcon,
@@ -19,10 +18,10 @@ import {
 
 export const publicLinks: NavLink[] = [
 	{ href: "/", label: "خانه", icon: <HomeIcon /> },
-	{ href: "/resume", label: "رزومه", icon: <SheetIcon /> },
+	{ href: "/about-us", label: "دکتر رحیمی", icon: <UserCircleIcon /> },
 	{ href: "/clinic", label: "کلینیک", icon: <InfoIcon /> },
-	{ href: "/about-us", label: "درباره ما", icon: <InfoIcon /> },
 	{ href: "/articles", label: "مقالات", icon: <BookOpenIcon /> },
+	{ href: "/auth/login", label: "درخواست نوبت", icon: <CalendarCheckIcon /> },
 ];
 
 export const basePrivateLinks: NavLink[] = [

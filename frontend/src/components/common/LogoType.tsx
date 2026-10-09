@@ -2,8 +2,11 @@ import React from "react";
 
 function LogoType() {
 	return (
-		<h1 className="text-start text-lg sm:text-xl font-bold">
-			کلینیک آنلاین
+		<h1 className="text-start text-base sm:text-lg font-bold leading-tight">
+			کلینیک فیزیوتراپی
+			<span className="block text-xs sm:text-sm font-medium text-muted-foreground">
+				دکتر عباس رحیمی
+			</span>
 		</h1>
 	);
 }

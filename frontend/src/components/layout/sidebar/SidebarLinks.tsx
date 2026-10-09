@@ -1,5 +1,7 @@
 "use client";
 
+import { LocaleSwitchLink } from "../LocaleSwitchLink";
+import { Globe2 } from "lucide-react";
 import { useUser } from "@/context";
 import SidebarLink from "./SidebarLink";
 import { usePathname } from "next/navigation";
@@ -87,6 +89,7 @@ const SidebarLinks = (props: Props) => {
 					{link.label}
 				</SidebarLink>
 			))}
+			<div className="flex items-center gap-2 rounded-md px-4 text-muted-foreground transition-colors hover:bg-accent hover:text-primary"><Globe2 aria-hidden="true" className="size-4" /><LocaleSwitchLink target="en" onClick={handleClick} className="flex min-h-11 flex-1 items-center" /></div>
 		</motion.div>
 	);
 };

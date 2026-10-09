@@ -1,108 +1,98 @@
-import { Shield } from "lucide-react";
+import Link from "next/link";
+import { Activity, Clock3, MapPin, Phone } from "lucide-react";
 
 function Footer() {
 	return (
-		<footer className="bg-muted/40 border-t border-border text-foreground py-12 px-4">
-			<div className="container mx-auto">
+		<footer className="brand-dark-section text-white py-14 px-4" dir="rtl">
+			<div className="container mx-auto max-w-7xl">
 				<div className="grid md:grid-cols-4 gap-8 mb-8">
 					<div>
 						<div className="flex items-center gap-2 mb-4">
-							<div className="size-10 bg-primary rounded-lg flex items-center justify-center">
-								<Shield className="size-6 text-primary-foreground" />
+							<div className="size-10 bg-white/10 rounded-xl flex items-center justify-center">
+								<Activity className="size-6 text-white" />
 							</div>
 							<span className="text-xl font-bold">
-								کلینیک آنلاین
+								کلینیک فیزیوتراپی دکتر رحیمی
 							</span>
 						</div>
-						<p className="text-muted-foreground">
-							سلامتی شما، اولویت ماست
+						<p className="text-white/70 leading-7">
+							بازگشت به حرکت، با پشتوانهٔ علم و توان‌بخشی مبتنی بر شواهد.
 						</p>
 					</div>
 
 					<div>
-						<h3 className="font-bold mb-4 text-foreground">خدمات</h3>
-						<ul className="flex flex-col gap-2 text-muted-foreground">
+						<h3 className="font-bold mb-4">خدمات</h3>
+						<ul className="flex flex-col gap-2 text-white/70">
 							<li>
-								<a
-									href="/#features"
-									className="hover:text-primary transition-colors">
-									مشاوره آنلاین
-								</a>
+								<Link
+									href="/#services"
+									className="hover:text-white transition-colors">
+									فیزیوتراپی و توان‌بخشی
+								</Link>
 							</li>
 							<li>
-								<a
-									href="/#booking"
-									className="hover:text-primary transition-colors">
-									نوبت‌دهی آنلاین
-								</a>
+								<Link
+									href="/#treatment-path"
+									className="hover:text-white transition-colors">
+									مسیر درمان
+								</Link>
 							</li>
 							<li>
-								<a
-									href="/#doctors"
-									className="hover:text-primary transition-colors">
-									پزشکان متخصص
-								</a>
+								<Link
+									href="/clinic"
+									className="hover:text-white transition-colors">
+									معرفی کلینیک
+								</Link>
 							</li>
 						</ul>
 					</div>
 
 					<div>
-						<h3 className="font-bold mb-4 text-foreground">شرکت</h3>
-						<ul className="flex flex-col gap-2 text-muted-foreground">
+						<h3 className="font-bold mb-4">کلینیک</h3>
+						<ul className="flex flex-col gap-2 text-white/70">
 							<li>
-								<a
+								<Link
 									href="/about-us"
-									className="hover:text-primary transition-colors">
-									درباره ما
-								</a>
+									className="hover:text-white transition-colors">
+									دکتر عباس رحیمی
+								</Link>
 							</li>
 							<li>
-								<a
-									href="/cv"
-									className="hover:text-primary transition-colors">
-									رزومه پزشک
-								</a>
+								<Link
+									href="/clinic"
+									className="hover:text-white transition-colors">
+									فضای کلینیک
+								</Link>
 							</li>
 							<li>
-								<a
+								<Link
 									href="/articles"
-									className="hover:text-primary transition-colors">
+									className="hover:text-white transition-colors">
 									مقالات و اخبار
-								</a>
+								</Link>
 							</li>
 						</ul>
 					</div>
 
-					<div>
-						<h3 className="font-bold mb-4 text-foreground">قوانین و راهنما</h3>
-						<ul className="flex flex-col gap-2 text-muted-foreground">
-							<li>
-								<a
-									href="#"
-									className="hover:text-primary transition-colors">
-									حریم خصوصی
-								</a>
-							</li>
-							<li>
-								<a
-									href="#"
-									className="hover:text-primary transition-colors">
-									شرایط استفاده
-								</a>
-							</li>
-							<li>
-								<a
-									href="/#faq"
-									className="hover:text-primary transition-colors">
-									سوالات متداول
-								</a>
-							</li>
-						</ul>
+					<div className="space-y-4 text-white/75">
+						<div className="flex items-start gap-3">
+							<Phone className="size-5 shrink-0 mt-0.5 text-[#9fd4cc]" />
+							<a href="tel:02177402525" dir="ltr" className="hover:text-white transition-colors">021 7740 2525</a>
+							<a href="tel:02177466628" dir="ltr" className="hover:text-white transition-colors">021 7746 6628</a>
+						</div>
+						<div className="flex items-start gap-3">
+							<Clock3 className="size-5 shrink-0 mt-0.5 text-[#9fd4cc]" />
+							<span>شنبه تا چهارشنبه ۸ تا ۱۲ و ۱۵ تا ۲۰<br />پنجشنبه ۸ تا ۱۲</span>
+						</div>
+						<div className="flex items-start gap-3">
+							<MapPin className="size-5 shrink-0 mt-0.5 text-[#9fd4cc]" />
+							<span>تهران، خیابان پیروزی، ساختمان پزشکان ادیب</span>
+						</div>
 					</div>
 				</div>
 
-				<div className="border-t border-border pt-8 text-center text-muted-foreground text-sm">
-					<p>© ۱۴۰۴ کلینیک آنلاین. تمامی حقوق محفوظ است.</p>
+				<div className="border-t border-white/15 pt-8 text-center text-white/55 text-sm">
+					<p>© ۱۴۰۵ کلینیک فیزیوتراپی دکتر عباس رحیمی. تمامی حقوق محفوظ است.</p>
 				</div>
 			</div>
 		</footer>
