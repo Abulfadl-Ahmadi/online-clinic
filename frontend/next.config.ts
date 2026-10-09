@@ -4,6 +4,7 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 const nextConfig: NextConfig = {
 	output: "standalone",
+	distDir: process.env.CLINIC_AUDIT_BUILD === "1" ? ".next-audit" : ".next",
 	reactStrictMode: process.env.NODE_ENV === "development",
 
 	basePath: basePath,
