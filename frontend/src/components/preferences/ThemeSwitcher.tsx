@@ -3,11 +3,20 @@
 import { Button } from "@/components/ui";
 import { useThemeSwitcher } from "@/hooks";
 import { themeLabel } from "@/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { MoonIcon, SunIcon, LaptopIcon } from "lucide-react";
 
-function ThemeSwitcher() {
+interface ThemeSwitcherProps {
+	locale?: "fa" | "en";
+}
+
+function ThemeSwitcher({ locale = "fa" }: ThemeSwitcherProps) {
 	const { theme, handleToggle } = useThemeSwitcher();
+	const reduceMotion = useReducedMotion();
+	const currentTheme = theme ?? "system";
+	const label = locale === "en"
+		? { light: "Light", dark: "Dark", system: "System" }[currentTheme as "light" | "dark" | "system"]
+		: themeLabel(currentTheme);
 
 	const renderIcon = () => {
 		switch (theme) {
@@ -25,36 +34,21 @@ function ThemeSwitcher() {
 			size="icon-sm"
 			variant="outline"
 			onClick={handleToggle}
-			title={`تم: ${themeLabel(theme ?? "system")}`}
-			className={`
-            size-[34px]
-            overflow-hidden
-            rounded-full
-            transition-all duration-300 ease-in-out
-            px-2 py-1.5
-            border border-border
-            hover:border-primary/30
-            hover:bg-primary/10
-            text-sm font-medium
-            justify-center
-                `}>
+			title={locale === "en" ? `Theme: ${label}` : `تم: ${label}`}
+			aria-label={locale === "en" ? `Change theme; current setting: ${label}` : `تغییر تم؛ حالت فعلی: ${label}`}
+			className="size-11 shrink-0 overflow-hidden rounded-full border border-border transition-colors hover:border-primary/30 hover:bg-primary/10">
 			<AnimatePresence mode="wait" initial={false}>
 				<motion.div
 					key={theme}
-					initial={{ opacity: 0, rotate: -90, scale: 0.6 }}
+					initial={reduceMotion ? false : { opacity: 0, rotate: -90, scale: 0.6 }}
 					animate={{ opacity: 1, rotate: 0, scale: 1 }}
-					exit={{ opacity: 0, rotate: 90, scale: 0.6 }}
-					transition={{ duration: 0.15, ease: "easeInOut" }}
+					exit={reduceMotion ? { opacity: 1 } : { opacity: 0, rotate: 90, scale: 0.6 }}
+					transition={{ duration: reduceMotion ? 0 : 0.15, ease: "easeInOut" }}
 					className="flex-shrink-0 flex items-center justify-center p-1">
 					{renderIcon()}
 				</motion.div>
 			</AnimatePresence>
 
-			<span
-				className="text-sm font-medium hidden overflow-hidden whitespace-nowrap
-                    transition-all duration-200 group-hover:block">
-				تم
-			</span>
 		</Button>
 	);
 }

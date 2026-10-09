@@ -3,7 +3,7 @@
 import { toast } from "sonner";
 import { useTheme } from "next-themes";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { ThemeType } from "@/types";
 import { useUser } from "@/context";
@@ -13,6 +13,7 @@ function useThemeSwitcher() {
 	const { user } = useUser();
 	const { theme, setTheme } = useTheme();
 	const [mounted, setMounted] = useState(false);
+	const syncedUserId = useRef<string | null>(null);
 
 	const getNextTheme = () => {
 		switch (theme) {
@@ -54,12 +55,16 @@ function useThemeSwitcher() {
 
 	useEffect(() => {
 		setMounted(true);
-		if (user) {
-			setTheme(user.settings.theme);
-		}
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
+	useEffect(() => {
+		if (user && syncedUserId.current !== user.id) {
+			syncedUserId.current = user.id;
+			setTheme(user.settings.theme);
+		} else if (!user) {
+			syncedUserId.current = null;
+		}
+	}, [user, setTheme]);
 
 	if (!mounted) return { theme: undefined, handleToggle: () => {} };
 
