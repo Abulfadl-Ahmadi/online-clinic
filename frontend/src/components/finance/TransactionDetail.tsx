@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 import { formatDate, formatDateOnly } from "@/lib/utils";
 import {
@@ -23,7 +24,6 @@ import {
 	Separator,
 } from "@/components/ui";
 import {
-	ArrowLeft,
 	AlertCircle,
 	CreditCard,
 	Calendar,
@@ -48,25 +48,29 @@ function TransactionDetail({ transactionId }: TransactionDetailProps) {
 	const [transaction, setTransaction] = useState<Transaction | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
+	const [retry, setRetry] = useState(0);
 
 	useEffect(() => {
+		let active = true;
 		const fetchTransaction = async () => {
 			setIsLoading(true);
+			setTransaction(null);
 			setError(null);
-
-			const result = await getTransactionDetail(transactionId);
-
-			if (result.success) {
-				setTransaction(result.data);
-			} else {
-				setError(result.message);
+			try {
+				const result = await getTransactionDetail(transactionId);
+				if (!active) return;
+				if (result.success) setTransaction(result.data);
+				else setError(result.message || "دریافت اطلاعات تراکنش ممکن نشد.");
+			} catch {
+				if (active) setError("ارتباط با سرور برقرار نشد. دوباره تلاش کنید.");
+			} finally {
+				if (active) setIsLoading(false);
 			}
-
-			setIsLoading(false);
 		};
 
-		fetchTransaction();
-	}, [transactionId]);
+		void fetchTransaction();
+		return () => { active = false; };
+	}, [transactionId, retry]);
 
 	// Loading state
 	if (isLoading) {
@@ -113,7 +117,7 @@ function TransactionDetail({ transactionId }: TransactionDetailProps) {
 					</div>
 				</Link>
 
-				<Card className="border-destructive/30 bg-destructive/5">
+				<Card role="alert" className="border-destructive/30 bg-destructive/5">
 					<CardContent>
 						<div className="flex items-start gap-4">
 							<AlertCircle className="h-5 w-5 text-destructive mt-0.5 flex-shrink-0" />
@@ -124,6 +128,7 @@ function TransactionDetail({ transactionId }: TransactionDetailProps) {
 								<p className="text-sm text-muted-foreground">
 									{error || "تراکنش مورد نظر یافت نشد"}
 								</p>
+								<Button variant="outline" className="mt-4" onClick={() => setRetry((value) => value + 1)}>تلاش دوباره</Button>
 							</div>
 						</div>
 					</CardContent>

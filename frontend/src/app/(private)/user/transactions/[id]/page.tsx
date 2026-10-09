@@ -7,9 +7,13 @@ import { TransactionDetail } from "@/components/finance";
 function TransactionDetailPage() {
 	const params = useParams();
 	const transactionId = params.id as string;
-	const { isLoading, isAuthenticated } = useUser();
+	const { isLoading, isAuthenticated, user } = useUser();
 
-	if (!isLoading && !isAuthenticated) {
+	if (isLoading) {
+		return <div role="status" className="p-6 text-muted-foreground">در حال بررسی حساب کاربری…</div>;
+	}
+
+	if (!isAuthenticated || !user) {
 		return (
 			<div className="flex flex-col items-center justify-center p-8">
 				<p className="text-lg font-medium text-foreground">

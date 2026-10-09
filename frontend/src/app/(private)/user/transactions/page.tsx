@@ -8,7 +8,11 @@ import { TransactionsList } from "@/components/finance";
 function TransactionsPage() {
 	const { isLoading, isAuthenticated, user } = useUser();
 
-	if ((!isLoading && !isAuthenticated) || !user) {
+	if (isLoading) {
+		return <div role="status" className="p-6 text-muted-foreground">در حال بررسی حساب کاربری…</div>;
+	}
+
+	if (!isAuthenticated || !user) {
 		return (
 			<div className="flex flex-col items-center justify-center h-full">
 				<p className="text-lg font-medium">
@@ -87,7 +91,7 @@ function TransactionsPage() {
 				<h2 className="text-lg font-semibold mb-4 text-foreground">
 					لیست تراکنش‌ها
 				</h2>
-				<TransactionsList page={1} />
+				<TransactionsList />
 			</div>
 		</div>
 	);

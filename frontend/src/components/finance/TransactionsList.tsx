@@ -13,18 +13,23 @@ import {
 } from "@/lib/labels";
 import { getTransactions } from "@/actions";
 import { Transaction, TransactionStatus } from "@/types";
-import { Card, CardContent, Badge, Skeleton } from "@/components/ui";
+import { Card, CardContent, Badge, Button, Skeleton } from "@/components/ui";
+import Pagination from "@/components/clinic/Pagination";
 import { ArrowRight, AlertCircle, CreditCard } from "lucide-react";
 
 interface TransactionsListProps {
-	page?: number;
+	initialPage?: number;
 }
 
 /**
  * Transaction List Component
  * Displays a paginated list of user transactions with filtering and sorting
  */
-function TransactionsList({ page = 1 }: TransactionsListProps) {
+function TransactionsList({ initialPage = 1 }: TransactionsListProps) {
+	const [page, setPage] = useState(initialPage);
+	const [hasNext, setHasNext] = useState(false);
+	const [hasPrevious, setHasPrevious] = useState(false);
+	const [retryCount, setRetryCount] = useState(0);
 	const [transactions, setTransactions] = useState<Transaction[]>([]);
 	const [totalCount, setTotalCount] = useState(0);
 	const [isLoading, setIsLoading] = useState(true);
@@ -35,21 +40,25 @@ function TransactionsList({ page = 1 }: TransactionsListProps) {
 			setIsLoading(true);
 			setError(null);
 
-			const result = await getTransactions(page);
-
-			if (result.success) {
-				setTransactions(result.data.results);
-				setTotalCount(result.data.count);
-			} else {
-				setError(result.message);
-				setTransactions([]);
+			try {
+				const result = await getTransactions(page);
+				if (result.success) {
+					setTransactions(result.data.results);
+					setTotalCount(result.data.count);
+					setHasNext(Boolean(result.data.next));
+					setHasPrevious(Boolean(result.data.previous));
+				} else {
+					setError(result.message || "دریافت تراکنش‌ها ممکن نشد.");
+				}
+			} catch {
+				setError("دریافت تراکنش‌ها ممکن نشد.");
+			} finally {
+				setIsLoading(false);
 			}
-
-			setIsLoading(false);
 		};
 
 		fetchTransactions();
-	}, [page]);
+	}, [page, retryCount]);
 
 	// Skeleton loading state
 	if (isLoading) {
@@ -75,7 +84,7 @@ function TransactionsList({ page = 1 }: TransactionsListProps) {
 	// Error state
 	if (error) {
 		return (
-			<Card className="border-destructive/30 bg-destructive/5">
+			<Card role="alert" className="border-destructive/30 bg-destructive/5">
 				<CardContent>
 					<div className="flex items-start gap-4">
 						<AlertCircle className="h-5 w-5 text-destructive mt-0.5 flex-shrink-0" />
@@ -83,9 +92,8 @@ function TransactionsList({ page = 1 }: TransactionsListProps) {
 							<h3 className="font-medium text-destructive mb-1">
 								خطا در بارگیری تراکنش‌ها
 							</h3>
-							<p className="text-sm text-muted-foreground">
-								{error}
-							</p>
+							<p className="text-sm text-muted-foreground">{error}</p>
+							<Button type="button" variant="outline" className="mt-3" onClick={() => setRetryCount((count) => count + 1)}>تلاش دوباره</Button>
 						</div>
 					</div>
 				</CardContent>
@@ -106,6 +114,7 @@ function TransactionsList({ page = 1 }: TransactionsListProps) {
 						شما هنوز هیچ تراکنشی انجام نداده‌اید.
 					</p>
 				</CardContent>
+				<Pagination page={page} hasNext={hasNext} hasPrevious={hasPrevious} onPageChange={setPage} />
 			</Card>
 		);
 	}
@@ -207,6 +216,7 @@ function TransactionsList({ page = 1 }: TransactionsListProps) {
 				);
 			})}
 
+			<Pagination page={page} hasNext={hasNext} hasPrevious={hasPrevious} onPageChange={setPage} />
 			{/* Pagination Info */}
 			<div className="flex items-center justify-center pt-4">
 				<p className="text-sm text-muted-foreground">
