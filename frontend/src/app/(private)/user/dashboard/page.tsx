@@ -23,6 +23,7 @@ function DashboardPage() {
 		Appointment[]
 	>([]);
 	const [loadingAppointments, setLoadingAppointments] = useState(true);
+	const [appointmentsError, setAppointmentsError] = useState(false);
 
 	useEffect(() => {
 		if (isAuthenticated && user) {
@@ -32,16 +33,26 @@ function DashboardPage() {
 
 	const loadUpcomingAppointments = async () => {
 		setLoadingAppointments(true);
-		const result = await getUpcomingAppointments();
-
-		if (result.success) {
-			setUpcomingAppointments(result.data);
+		setAppointmentsError(false);
+		try {
+			const result = await getUpcomingAppointments();
+			if (result.success) {
+				setUpcomingAppointments(result.data);
+			} else {
+				setAppointmentsError(true);
+			}
+		} catch {
+			setAppointmentsError(true);
+		} finally {
+			setLoadingAppointments(false);
 		}
-
-		setLoadingAppointments(false);
 	};
 
-	if ((!isLoading && !isAuthenticated) || !user) {
+	if (isLoading) {
+		return <div role="status" className="p-6 text-muted-foreground">در حال بررسی حساب کاربری…</div>;
+	}
+
+	if (!isAuthenticated || !user) {
 		return (
 			<div className="flex flex-col items-center justify-center h-full">
 				<p className="text-lg font-medium">
@@ -93,7 +104,7 @@ function DashboardPage() {
 								className="w-full justify-start">
 								<Link href="/user/profile">
 									<User className="size-4 me-2" />
-									ویرایش پروفایل
+									مشاهده پروفایل
 								</Link>
 							</Button>
 						</CardContent>
@@ -123,17 +134,20 @@ function DashboardPage() {
 									<Skeleton className="h-48" />
 									<Skeleton className="h-48" />
 								</div>
+							) : appointmentsError ? (
+								<div className="flex flex-col items-center gap-4 py-12 text-center" role="alert">
+									<p className="text-muted-foreground">دریافت نوبت‌ها ممکن نشد. اتصال خود را بررسی کنید و دوباره تلاش کنید.</p>
+									<Button variant="outline" onClick={() => void loadUpcomingAppointments()}>تلاش دوباره</Button>
+								</div>
 							) : upcomingAppointments.length === 0 ? (
 								<div className="text-center py-12">
 									<Calendar className="size-12 mx-auto text-muted-foreground mb-4" />
 									<p className="text-muted-foreground mb-4">
 										نوبت آینده‌ای ندارید
 									</p>
-									<Button asChild>
-										<Link href="/user/doctors">
-											رزرو نوبت جدید
-										</Link>
-									</Button>
+									{userRole !== "doctor" && <Button asChild>
+										<Link href="/user/doctors">رزرو نوبت جدید</Link>
+									</Button>}
 								</div>
 							) : (
 								<div className="flex flex-col gap-4">

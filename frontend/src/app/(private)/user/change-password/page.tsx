@@ -16,7 +16,11 @@ import {
 function ChangePasswordPage() {
 	const { isLoading, isAuthenticated, user } = useUser();
 
-	if ((!isLoading && !isAuthenticated) || !user) {
+	if (isLoading) {
+		return <div role="status" className="p-6 text-muted-foreground">در حال بررسی حساب کاربری…</div>;
+	}
+
+	if (!isAuthenticated || !user) {
 		return (
 			<div className="flex flex-col items-center justify-center h-full py-20" dir="rtl">
 				<p className="text-lg font-medium text-muted-foreground">
