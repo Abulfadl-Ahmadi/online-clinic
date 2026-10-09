@@ -5,8 +5,8 @@ import { NavManager } from "@/components/layout";
 
 export async function generateMetadata(): Promise<Metadata> {
 	return {
-		title: "مقالات",
-		description: "مقالات کلینک آنلاین",
+		title: "مقالات و راهنماهای توان‌بخشی",
+		description: "مقاله‌ها و راهنماهای آموزشی کلینیک فیزیوتراپی دکتر عباس رحیمی دربارهٔ حرکت، توان‌بخشی و پیشگیری از آسیب.",
 	};
 }
 
@@ -14,7 +14,7 @@ function ArticleLayout({ children }: Readonly<PropsWithChildren>) {
 	return (
 		<Fragment>
 			<NavManager />
-			<main className="flex-1 app-px py-8">{children}</main>
+			<main id="main-content" tabIndex={-1} className="flex-1">{children}</main>
 		</Fragment>
 	);
 }

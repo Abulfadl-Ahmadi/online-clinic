@@ -1,9 +1,9 @@
-import { listArticles } from "@/actions";
+import { listArticles, listCategories, listTags } from "@/actions";
 import ArticleList from "@/components/articles/ArticleList";
 import ArticlesFilters from "@/components/articles/ArticlesFilters";
 import PaginationControls from "@/components/articles/PaginationControls";
+import { BookOpenText, Search } from "lucide-react";
 import { redirect } from "next/navigation";
-import { listCategories, listTags } from "@/actions";
 
 interface PageProps {
 	searchParams?: Promise<Record<string, string | string[] | undefined>>;
@@ -40,10 +40,12 @@ async function ArticlePage(props: PageProps) {
 	]);
 
 	if (!res.success) {
-		// For the public list, on hard error go to not-found or show a simple message
 		return (
-			<div className="text-sm text-destructive p-4 bg-destructive/10 rounded-lg border border-destructive/20 text-center">
-				خطا در بارگذاری لیست مقالات
+			<div className="brand-page min-h-[60vh] px-4 py-16" dir="rtl">
+				<div className="mx-auto max-w-7xl rounded-[1.5rem] border border-[#74364b]/15 bg-[#fffafa] p-8 text-center shadow-sm">
+					<h1 className="text-xl font-extrabold text-[#123e46]">مقالات فعلاً در دسترس نیستند</h1>
+					<p className="mt-3 leading-8 text-[#596a6d]">لطفاً چند دقیقهٔ دیگر دوباره تلاش کنید یا برای راهنمایی با کلینیک تماس بگیرید.</p>
+				</div>
 			</div>
 		);
 	}
@@ -58,24 +60,39 @@ async function ArticlePage(props: PageProps) {
 		: undefined;
 
 	return (
-		<div className="space-y-6">
-			<ArticlesFilters
-				defaultSearch={search}
-				defaultOrdering={ordering}
-				defaultCategory={categoriesSlug}
-				defaultTag={tagsSlug}
-				categories={cats.success ? cats.data.results.map(c => ({ label: c.name, value: c.slug })) : []}
-				tags={tags.success ? tags.data.results.map(t => ({ label: t.name, value: t.slug })) : []}
-				action={applyFilters}
-			/>
+		<div className="brand-page min-h-screen" dir="rtl">
+			<section className="brand-motion-field px-4 py-16 sm:py-20">
+				<div className="mx-auto max-w-7xl">
+					<div className="max-w-3xl">
+						<p className="brand-overline flex items-center gap-2"><BookOpenText className="size-4" />دانشنامهٔ کلینیک</p>
+						<h1 className="mt-4 text-4xl font-extrabold leading-tight text-[#123e46] sm:text-5xl">دانش قابل‌فهم برای حرکت آگاهانه‌تر</h1>
+						<p className="mt-5 max-w-2xl text-lg leading-8 text-[#415357]">مقاله‌ها و راهنماهای آموزشی کلینیک دربارهٔ توان‌بخشی، پیشگیری از آسیب و مراقبت از حرکت.</p>
+					</div>
+				</div>
+			</section>
 
-			<ArticleList articles={results} categoryNames={categoryNames} tagNames={tagNames} />
+			<section className="px-4 py-12 sm:py-16">
+				<div className="mx-auto max-w-7xl">
+					<div className="rounded-[1.5rem] border border-[#123e46]/10 bg-white p-5 shadow-sm sm:p-7">
+						<div className="mb-6 flex items-center gap-3"><div className="rounded-xl bg-[#e7f2f0] p-2 text-[#123e46]"><Search className="size-5" /></div><div><h2 className="font-extrabold text-[#123e46]">جست‌وجو در مقاله‌ها</h2><p className="mt-1 text-sm text-[#596a6d]">بر اساس موضوع، دسته‌بندی یا برچسب موردنظر خود فیلتر کنید.</p></div></div>
+						<ArticlesFilters
+							defaultSearch={search}
+							defaultOrdering={ordering}
+							defaultCategory={categoriesSlug}
+							defaultTag={tagsSlug}
+							categories={cats.success ? cats.data.results.map(c => ({ label: c.name, value: c.slug })) : []}
+							tags={tags.success ? tags.data.results.map(t => ({ label: t.name, value: t.slug })) : []}
+							action={applyFilters}
+						/>
+					</div>
 
-			<PaginationControls
-				page={page}
-				hasNext={Boolean(next)}
-				hasPrevious={Boolean(previous)}
-			/>
+					<div className="mt-12">
+						<div className="mb-6 flex items-end justify-between gap-4"><div><p className="brand-overline">مطالب آموزشی</p><h2 className="mt-2 text-2xl font-extrabold text-[#123e46] sm:text-3xl">مقاله‌های تازه</h2></div><p className="text-sm text-[#596a6d]">{results.length} مقاله در این صفحه</p></div>
+						<ArticleList articles={results} categoryNames={categoryNames} tagNames={tagNames} />
+						<div className="mt-10"><PaginationControls page={page} hasNext={Boolean(next)} hasPrevious={Boolean(previous)} /></div>
+					</div>
+				</div>
+			</section>
 		</div>
 	);
 }
