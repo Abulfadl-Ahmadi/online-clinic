@@ -40,6 +40,7 @@ export default function CancelDialog({
 				</DialogHeader>
 
 				<Textarea
+					aria-label="دلیل لغو نوبت (اختیاری)"
 					placeholder="دلیل لغو (اختیاری)..."
 					value={cancelReason}
 					onChange={(e) => setCancelReason(e.target.value)}

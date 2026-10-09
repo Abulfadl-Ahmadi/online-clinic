@@ -1,7 +1,7 @@
 "use client";
 
 import { toast } from "sonner";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import type { Appointment } from "@/types";
 import {
@@ -10,12 +10,14 @@ import {
 	cancelAppointment,
 } from "@/actions/clinic";
 
-export default function useAppointments() {
+export default function useAppointments(enabled = true) {
 	const [allAppointments, setAllAppointments] = useState<Appointment[]>([]);
 	const [upcomingAppointments, setUpcomingAppointments] = useState<
 		Appointment[]
 	>([]);
 	const [loading, setLoading] = useState(true);
+	const [allError, setAllError] = useState(false);
+	const [upcomingError, setUpcomingError] = useState(false);
 	const [page, setPage] = useState(1);
 	const [hasNext, setHasNext] = useState(false);
 	const [hasPrevious, setHasPrevious] = useState(false);
@@ -26,35 +28,41 @@ export default function useAppointments() {
 	>(null);
 	const [cancelReason, setCancelReason] = useState("");
 	const [cancelling, setCancelling] = useState(false);
+	const requestId = useRef(0);
 
 	useEffect(() => {
-		loadAppointments();
+		if (enabled) void loadAppointments();
+		return () => { requestId.current += 1; };
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [page]);
+	}, [page, enabled]);
 
 	async function loadAppointments() {
+		if (!enabled) return;
+		const currentRequest = ++requestId.current;
 		setLoading(true);
+		setAllError(false);
+		setUpcomingError(false);
 		try {
-			const [allResult, upcomingResult] = await Promise.all([
+			const [allResult, upcomingResult] = await Promise.allSettled([
 				getAppointments(page),
 				getUpcomingAppointments(),
 			]);
+			if (currentRequest !== requestId.current) return;
 
-			if (allResult.success) {
-				setAllAppointments(allResult.data.results);
-				setHasNext(!!allResult.data.next);
-				setHasPrevious(!!allResult.data.previous);
+			if (allResult.status === "fulfilled" && allResult.value.success) {
+				setAllAppointments(allResult.value.data.results);
+				setHasNext(Boolean(allResult.value.data.next));
+				setHasPrevious(Boolean(allResult.value.data.previous));
+			} else {
+				setAllError(true);
 			}
-			if (upcomingResult.success) {
-				setUpcomingAppointments(upcomingResult.data);
+			if (upcomingResult.status === "fulfilled" && upcomingResult.value.success) {
+				setUpcomingAppointments(upcomingResult.value.data);
+			} else {
+				setUpcomingError(true);
 			}
-		} catch (error: unknown) {
-			if (process.env.NODE_ENV === "development") {
-				console.error("[useLoginForm]", error);
-			}
-			toast.error("خطا در دریافت داده‌ها");
 		} finally {
-			setLoading(false);
+			if (currentRequest === requestId.current) setLoading(false);
 		}
 	}
 
@@ -64,30 +72,36 @@ export default function useAppointments() {
 	}
 
 	async function confirmCancel() {
-		if (!appointmentToCancel) return;
+		if (!appointmentToCancel || cancelling) return;
 		setCancelling(true);
+		try {
+			const result = await cancelAppointment(appointmentToCancel, {
+				reason: cancelReason,
+			});
 
-		const result = await cancelAppointment(appointmentToCancel, {
-			reason: cancelReason,
-		});
-
-		if (result.success) {
-			toast.success("نوبت با موفقیت لغو شد");
-			setCancelDialogOpen(false);
-			setAppointmentToCancel(null);
-			setCancelReason("");
-			await loadAppointments();
-		} else {
-			toast.error(result.message || "خطا در لغو نوبت");
+			if (result.success) {
+				toast.success("نوبت با موفقیت لغو شد");
+				setCancelDialogOpen(false);
+				setAppointmentToCancel(null);
+				setCancelReason("");
+				await loadAppointments();
+			} else {
+				toast.error(result.message || "خطا در لغو نوبت");
+			}
+		} catch {
+			toast.error("ارتباط با سرور برای لغو نوبت برقرار نشد. دوباره تلاش کنید.");
+		} finally {
+			setCancelling(false);
 		}
-
-		setCancelling(false);
 	}
 
 	return {
 		allAppointments,
 		upcomingAppointments,
 		loading,
+		allError,
+		upcomingError,
+		retry: loadAppointments,
 		page,
 		hasNext,
 		hasPrevious,
