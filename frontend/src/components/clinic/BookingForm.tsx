@@ -21,6 +21,8 @@ interface BookingFormProps {
 	doctor: DoctorProfile;
 	slots: AvailableSlot[];
 	loadingSlots: boolean;
+	slotsError?: boolean;
+	onRetrySlots?: () => void;
 	onBook: (data: BookAppointmentRequest) => Promise<void>;
 }
 
@@ -28,6 +30,8 @@ export default function BookingForm({
 	doctor,
 	slots,
 	loadingSlots,
+	slotsError = false,
+	onRetrySlots,
 	onBook,
 }: BookingFormProps) {
 	const [selectedSlot, setSelectedSlot] = useState<AvailableSlot | null>(
@@ -35,20 +39,29 @@ export default function BookingForm({
 	);
 	const [patientNotes, setPatientNotes] = useState("");
 	const [booking, setBooking] = useState(false);
+	const activeSlot = selectedSlot && slots.find((slot) =>
+		slot.isAvailable && slot.date === selectedSlot.date &&
+		slot.startTime === selectedSlot.startTime && slot.endTime === selectedSlot.endTime
+	);
 
 	const handleBooking = async () => {
-		if (!selectedSlot) return toast.error("لطفا یک نوبت انتخاب کنید");
-
+		if (!activeSlot) return toast.error("لطفا یک زمان آزاد انتخاب کنید");
+		if (booking || loadingSlots || slotsError || !doctor.isAcceptingPatients) return;
 		setBooking(true);
-		await onBook({
-			doctorId: doctor.id,
-			appointmentDate: selectedSlot.date,
-			startTime: selectedSlot.startTime,
-			endTime: selectedSlot.endTime,
-			appointmentType: "consultation",
-			patientNotes,
-		});
-		setBooking(false);
+		try {
+			await onBook({
+				doctorId: doctor.id,
+				appointmentDate: activeSlot.date,
+				startTime: activeSlot.startTime,
+				endTime: activeSlot.endTime,
+				appointmentType: "consultation",
+				patientNotes,
+			});
+		} catch {
+			toast.error("ارتباط با سرور برای رزرو برقرار نشد. دوباره تلاش کنید.");
+		} finally {
+			setBooking(false);
+		}
 	};
 
 	return (
@@ -58,7 +71,7 @@ export default function BookingForm({
 				{/* Book Button */}
 				<Button
 					disabled={
-						!selectedSlot || booking || !doctor.isAcceptingPatients
+						!activeSlot || booking || loadingSlots || slotsError || !doctor.isAcceptingPatients
 					}
 					onClick={handleBooking}>
 					{booking && <Spinner className="size-4 me-2" />}
@@ -67,12 +80,13 @@ export default function BookingForm({
 			</CardHeader>
 			<CardContent className="flex flex-col gap-6">
 				{/* Patient Notes */}
-				{selectedSlot && (
+				{activeSlot && !loadingSlots && !slotsError && (
 					<div>
-						<h3 className="text-lg font-semibold mb-2">
+						<label htmlFor="booking-patient-notes" className="block text-lg font-semibold mb-2">
 							توضیحات (اختیاری)
-						</h3>
+						</label>
 						<Textarea
+							id="booking-patient-notes"
 							className="min-h-40"
 							placeholder="علائم یا مشکلات خود را شرح دهید..."
 							value={patientNotes}
@@ -84,19 +98,24 @@ export default function BookingForm({
 
 				{/* Time Slots */}
 				{loadingSlots ? (
-					<div className="h-64 bg-muted animate-pulse rounded-md" />
+					<div role="status" aria-label="در حال دریافت زمان‌های آزاد" className="h-64 bg-muted animate-pulse rounded-md" />
+				) : slotsError ? (
+					<div role="alert" className="rounded-xl border border-destructive/30 bg-destructive/5 p-5 text-center">
+						<p>دریافت زمان‌های آزاد ممکن نشد. دوباره تلاش کنید.</p>
+						{onRetrySlots && <Button variant="outline" className="mt-4" onClick={onRetrySlots}>تلاش دوباره</Button>}
+					</div>
 				) : (
 					<div className="overflow-y-auto max-h-80 p-4">
 						<TimeSlotPicker
 							slots={slots}
-							selectedSlot={selectedSlot}
+							selectedSlot={activeSlot || null}
 							onSelectSlot={setSelectedSlot}
 						/>
 					</div>
 				)}
 
 				{/* Booking Summary */}
-				{selectedSlot && <BookingSummary slot={selectedSlot} />}
+				{activeSlot && !loadingSlots && !slotsError && <BookingSummary slot={activeSlot} />}
 			</CardContent>
 		</Card>
 	);

@@ -19,10 +19,11 @@ function Pagination({
 	if (!hasNext && !hasPrevious) return null;
 
 	return (
-		<div className="flex items-center justify-center gap-4 mt-8">
+		<nav aria-label="صفحه‌بندی" className="flex items-center justify-center gap-4 mt-8">
 			<Button
 				variant="outline"
 				size="icon"
+				aria-label="صفحه قبل"
 				onClick={() => onPageChange(page - 1)}
 				disabled={!hasPrevious}>
 				<ChevronRight className="size-4" />
@@ -33,11 +34,12 @@ function Pagination({
 			<Button
 				variant="outline"
 				size="icon"
+				aria-label="صفحه بعد"
 				onClick={() => onPageChange(page + 1)}
 				disabled={!hasNext}>
 				<ChevronLeft className="size-4" />
 			</Button>
-		</div>
+		</nav>
 	);
 }
 
