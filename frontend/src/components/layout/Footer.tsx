@@ -75,9 +75,9 @@ function Footer() {
 					</div>
 
 					<div className="space-y-4 text-white/75">
-						<div className="flex items-start gap-3">
+						<div className="flex flex-wrap items-start gap-3">
 							<Phone className="size-5 shrink-0 mt-0.5 text-[#9fd4cc]" />
-							<a href="tel:02177402525" dir="ltr" className="hover:text-white transition-colors">021 7740 2525</a>
+							<a href="tel:02177402528" dir="ltr" className="whitespace-nowrap hover:text-white transition-colors">021-77402528</a>
 							<a href="tel:02177466628" dir="ltr" className="hover:text-white transition-colors">021 7746 6628</a>
 						</div>
 						<div className="flex items-start gap-3">
