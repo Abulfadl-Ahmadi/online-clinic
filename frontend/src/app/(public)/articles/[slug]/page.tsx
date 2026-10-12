@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getArticleDetail, listCategories, listTags } from "@/actions";
 import ArticleContent from "@/components/articles/ArticleContent";
+import { Reveal } from "@/components/motion/Reveal";
 import ArticleSummary from "@/components/articles/ArticleSummary";
 import CategoryBadge from "@/components/articles/CategoryBadge";
 import TagChip from "@/components/articles/TagChip";
@@ -58,12 +59,12 @@ export default async function ArticleDetailPage(props: PageProps) {
 
   return (
     <article className="brand-page min-h-screen" dir="rtl">
-      <header className="brand-motion-field px-4 py-14 sm:py-20">
+      <header className="public-intro relative isolate overflow-hidden px-4 py-14 sm:py-20"><div className="public-intro-pattern pointer-events-none absolute inset-0 -z-10" aria-hidden="true" />
         <div className="mx-auto max-w-4xl">
           <Link href="/articles" className="brand-link-ring inline-flex items-center gap-2 text-sm font-bold text-[#123e46] hover:text-[#74364b]">
             <ArrowLeft className="size-4" /> بازگشت به مقاله‌ها
           </Link>
-          <div className="mt-8 rounded-[1.5rem] border border-white/70 bg-white/70 p-6 shadow-sm backdrop-blur-sm sm:p-10">
+          <Reveal className="mt-8 rounded-2xl border border-[var(--brand-line)] bg-[var(--brand-surface)] p-6 sm:p-10">
             <div className="flex flex-wrap gap-1">
               {a.categories?.map((c) => <CategoryBadge key={c} slug={c} name={categoryNames?.[c]} />)}
               {a.tags?.map((t) => <TagChip key={t} tag={t} name={tagNames?.[t]} />)}
@@ -72,20 +73,20 @@ export default async function ArticleDetailPage(props: PageProps) {
             {a.summary && <div className="mt-5 max-w-3xl text-lg leading-8 text-[#415357]"><ArticleSummary summary={a.summary} /></div>}
             <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-[#596a6d]">
               {a.publishedAt ? <span className="inline-flex items-center gap-2"><CalendarDays className="size-4 text-[#4b8a83]" />{new Date(a.publishedAt).toLocaleDateString("fa-IR")}</span> : null}
-              {typeof a.readingTimeMin === "number" ? <span className="inline-flex items-center gap-2"><Clock3 className="size-4 text-[#4b8a83]" />{a.readingTimeMin} دقیقه مطالعه</span> : null}
+              {typeof a.readingTimeMin === "number" ? <span className="inline-flex items-center gap-2"><Clock3 className="size-4 text-[#4b8a83]" />{a.readingTimeMin.toLocaleString("fa-IR")} دقیقه مطالعه</span> : null}
             </div>
-          </div>
+          </Reveal>
         </div>
       </header>
 
       <div className="px-4 py-12 sm:py-16">
-        <div className="mx-auto max-w-3xl rounded-[1.5rem] border border-[#123e46]/10 bg-white p-6 shadow-sm sm:p-10">
+        <div className="mx-auto max-w-3xl rounded-2xl border border-[var(--brand-line)] bg-[var(--brand-surface)] p-6 sm:p-10">
           <ArticleContent content={a.content} />
         </div>
-        <aside className="mx-auto mt-10 max-w-3xl rounded-[1.5rem] bg-[#edf5f3] p-6 sm:flex sm:items-center sm:justify-between sm:gap-8">
+        <Reveal className="mx-auto mt-10 max-w-3xl rounded-2xl border border-[var(--brand-line)] bg-[var(--brand-mist)] p-6 sm:flex sm:items-center sm:justify-between sm:gap-8">
           <div><p className="font-extrabold text-[#123e46]">برای ارزیابی و برنامهٔ درمان شخصی</p><p className="mt-2 leading-7 text-[#596a6d]">برای هماهنگی نوبت یا طرح پرسش خود با کلینیک تماس بگیرید.</p></div>
           <Link href="/auth/login" className="brand-link-ring mt-5 inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#123e46] px-5 font-bold text-white hover:bg-[#0d3239] sm:mt-0"><CalendarDays className="size-5" />درخواست نوبت</Link>
-        </aside>
+        </Reveal>
       </div>
     </article>
   );

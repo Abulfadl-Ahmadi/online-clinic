@@ -1,8 +1,4 @@
-"use client";
-
-import { ChevronDown } from "lucide-react";
-import { useId, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { FaqBlock } from "@/components/blocks/faq";
 
 const faqs = [
 	{
@@ -45,57 +41,8 @@ const faqs = [
 ];
 
 export function ClinicFaq() {
-	const baseId = useId();
-	const [openIndex, setOpenIndex] = useState<number | null>(0);
-	const reduceMotion = useReducedMotion();
-
-	return (
-		<section className="brand-soft-section px-4 py-20 sm:py-24" aria-labelledby="faq-title">
-			<div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.75fr_1.25fr] lg:gap-16">
-				<div>
-					<p className="brand-overline">پیش از مراجعه</p>
-					<h2 id="faq-title" className="mt-3 text-3xl font-extrabold leading-tight text-[var(--brand-ink)] sm:text-4xl">
-						پاسخ به پرسش‌های رایج شما
-					</h2>
-					<p className="mt-5 leading-8 text-[var(--brand-muted)]">
-						اگر پاسخ پرسش‌تان اینجا نیست، در ساعات کاری با کلینیک تماس بگیرید تا همکاران ما راهنمایی کنند.
-					</p>
-				</div>
-				<div className="brand-card rounded-[1.5rem] px-6 sm:px-8">
-					{faqs.map((faq, index) => {
-						const isOpen = openIndex === index;
-						const panelId = `${baseId}-panel-${index}`;
-
-						return (
-							<div key={faq.question} className="border-b border-[color:var(--brand-line)] last:border-b-0">
-								<h3>
-									<button
-										type="button"
-										className="brand-link-ring flex w-full items-center justify-between gap-5 py-5 text-start font-bold text-[var(--brand-ink)]"
-										aria-expanded={isOpen}
-										aria-controls={panelId}
-										onClick={() => setOpenIndex(isOpen ? null : index)}>
-										{faq.question}
-										<ChevronDown className={`size-5 shrink-0 transition-transform ${isOpen ? "rotate-180" : ""}`} />
-									</button>
-								</h3>
-								<AnimatePresence initial={false}>
-									{isOpen && <motion.div
-										key={panelId}
-										id={panelId}
-										initial={{ height: 0, opacity: 0 }}
-										animate={{ height: "auto", opacity: 1 }}
-										exit={{ height: 0, opacity: 0 }}
-										transition={{ duration: reduceMotion ? 0 : 0.25 }}
-										className="overflow-hidden leading-8 text-[var(--brand-muted)]">
-										<p className="pb-5">{faq.answer}</p>
-									</motion.div>}
-								</AnimatePresence>
-							</div>
-						);
-					})}
-				</div>
-			</div>
-		</section>
-	);
+	return <FaqBlock
+		items={faqs.map((faq, index) => ({ id: String(index), title: faq.question, content: faq.answer }))}
+		description="اگر پاسخ پرسش‌تان اینجا نیست، در ساعات کاری با کلینیک تماس بگیرید تا همکاران ما راهنمایی کنند."
+	/>;
 }
