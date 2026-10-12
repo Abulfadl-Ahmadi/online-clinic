@@ -41,18 +41,30 @@ async function sendOtpAction(
 		}
 		return {
 			success: false,
-			message: response.statusCode === 503 ? "سرویس پیامک در دسترس نیست. دوباره تلاش کنید." : "ارسال کد انجام نشد. شماره را بررسی کنید.",
+			message: response.statusCode === 503
+				? "ارسال کد انجام نشد. لطفاً کمی بعد دوباره تلاش کنید."
+				: response.statusCode === 429
+					? "تعداد درخواست‌ها زیاد است. کمی بعد دوباره تلاش کنید."
+					: "ارسال کد انجام نشد. شماره موبایل را بررسی کنید.",
 			statusCode: response.statusCode,
 			type: response.type,
 		};
 	}
 
 	const data = response.data;
+	if (data?.smsStatus !== "accepted") {
+		return {
+			success: false,
+			message: "تأیید دریافت درخواست از سرویس پیامک انجام نشد. دوباره تلاش کنید.",
+			statusCode: 502,
+			type: "Internal",
+		};
+	}
 
 	return {
 		success: true,
-		data: data,
-		message: `کد به شماره تلفن ${body.phone_number} ارسال شد`,
+		data,
+		message: "درخواست ارسال کد پذیرفته شد. کد تأیید را بررسی کنید.",
 	};
 }
 

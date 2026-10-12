@@ -152,11 +152,17 @@ m.
     # ---------------------------------------------------------------
     # in MB
     MAX_AVATAR_SIZE="2"
-    SMS_IN_DEV="True"  # With DEBUG=False this does not bypass sms.ir; DEBUG=True and False prints code locally
+    # OTP always calls sms.ir, including when DEBUG=True. No debug-only fake success.
     SMS_API_KEY="your-api-key"
     VERIFY_SMS_API_URL="https://api.sms.ir/v1/send/verify"
     SMS_TEMPLATE_ID="0"  # Replace 0 with your numeric sms.ir template ID
     RESET_PASSWORD_SMS_TEMPLATE_ID="0"  # Replace if using a separate reset-password template
+
+    # After an OTP request, the API returns sms_status=accepted only when sms.ir
+    # confirms status=1 and returns a positive messageId. This is NOT handset delivery.
+    # Find message_id in otp_api server logs, then check delivery from backend:
+    # python manage.py sms_delivery 89545112
+    # Do not use a Sandbox API key for real SMS: Sandbox accepts simulated requests.
 
     # ---------------------------------------------------------------
     # Celery Configuration

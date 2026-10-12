@@ -1,5 +1,4 @@
 import logging
-from django.conf import settings
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.request import Request
@@ -8,12 +7,12 @@ from django.contrib.auth import get_user_model
 from rest_framework.permissions import AllowAny
 from rest_framework.throttling import ScopedRateThrottle
 
-from authentication.utils import send_verification_sms
+from authentication.sms_provider import SmsResult, send_verification_sms
 from accounts.utils import normalize_phone_number
 from accounts.constants import UserRole, UserStatus
 from authentication.models.otp_model import OTPModel
 from authentication.constants import (
-    SMS_IN_DEV, SMS_TEMPLATE_ID, RESET_PASSWORD_SMS_TEMPLATE_ID,
+    SMS_TEMPLATE_ID, RESET_PASSWORD_SMS_TEMPLATE_ID,
     SMS_API_KEY, VERIFY_SMS_API_URL, OTPType,
 )
 from authentication.api.serializers import SendOTPSerializer, VerifyOTPSerializer
@@ -28,19 +27,8 @@ logger = logging.getLogger("otp_api")
 # ---------------------------------------------------------------------
 
 
-def log_debug_sms(phone: str, code: str):
-    """Print OTP to console in development."""
-    print("\n========== OTP DEBUG ==========")
-    print(f"Phone: {phone}")
-    print(f"Code:  {code}")
-    print("================================\n")
-
-
-def send_otp_sms(phone: str, code: str, template_id: int) -> bool:
-    """Return True only when the provider confirms delivery request acceptance."""
-    if settings.DEBUG and not SMS_IN_DEV:
-        log_debug_sms(phone, code)
-        return True
+def send_otp_sms(phone: str, code: str, template_id: int) -> SmsResult:
+    """Return provider acceptance; handset delivery is a separate later event."""
     return send_verification_sms(phone, code, template_id=template_id)
 
 
@@ -81,23 +69,22 @@ class SendOTPView(APIView):
             RESET_PASSWORD_SMS_TEMPLATE_ID if otp_type == OTPType.RESET_PASSWORD
             else SMS_TEMPLATE_ID
         )
-        if not (settings.DEBUG and not SMS_IN_DEV) and not (
-            SMS_API_KEY and VERIFY_SMS_API_URL and template_id
-        ):
+        if not (SMS_API_KEY and VERIFY_SMS_API_URL and template_id):
             return Response({"message": "SMS service unavailable."}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
         otp = OTPModel.generate_otp(phone_number=phone, type=otp_type)  # type: ignore
-        if not send_otp_sms(phone, otp.plain_code, template_id):  # type: ignore
+        send_result = send_otp_sms(phone, otp.plain_code, template_id)  # type: ignore
+        if not send_result.accepted:
             otp.delete()
-            return Response({"message": "SMS delivery failed."}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+            return Response(
+                {"message": "SMS service did not accept the request.", "sms_status": "rejected"},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
 
-        logger.info(
-            f"OTP generated for {phone} ({otp_type})",
-            extra={"phone_number": phone, "otp_type": otp_type},
-        )
-
+        logger.info("OTP request accepted type=%s message_id=%s", otp_type, send_result.message_id)
         return Response(
-            {"message": "OTP sent successfully."},
+            {"message": "SMS request accepted; delivery is not yet confirmed.",
+             "sms_status": "accepted"},
             status=status.HTTP_200_OK,
         )
 

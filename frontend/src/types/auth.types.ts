@@ -39,6 +39,7 @@ export type OtpType = keyof typeof OtpType;
 
 export interface SendOtpResult {
 	message: string;
+	smsStatus: "accepted" | "rejected";
 }
 
 export interface RegisterResult {

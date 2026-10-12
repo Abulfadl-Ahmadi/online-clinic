@@ -1,17 +1,7 @@
-import json
 import hashlib
-import logging
-import requests
 from django.core.validators import RegexValidator
-from authentication.constants import (
-    SMS_API_KEY,
-    SMS_TEMPLATE_ID,
-    RESET_PASSWORD_SMS_TEMPLATE_ID,
-    VERIFY_SMS_API_URL,
-)
-
-
-logger = logging.getLogger("otp_api")
+from authentication.constants import SMS_TEMPLATE_ID, RESET_PASSWORD_SMS_TEMPLATE_ID
+from authentication.sms_provider import send_verification_sms as send_sms_ir_verification
 
 
 phone_regex = RegexValidator(
@@ -27,41 +17,8 @@ def hash_code(code: str, salt: str) -> str:
 def send_verification_sms(
     phone_number: str, verification_code: str, template_id: int = SMS_TEMPLATE_ID
 ) -> bool:
-    """Send a verification code using the configured sms.ir template."""
-    if not SMS_API_KEY or not VERIFY_SMS_API_URL or not template_id:
-        logger.error("SMS_API_KEY, VERIFY_SMS_API_URL or SMS template ID not configured")
-        return False
-
-    payload = {
-        "mobile": phone_number,
-        "templateId": template_id,
-        "parameters": [{"name": "Code", "value": verification_code}],
-    }
-
-    headers = {
-        "Content-Type": "application/json",
-        "Accept": "text/plain",
-        "x-api-key": SMS_API_KEY,
-    }
-
-    try:
-        response = requests.post(
-            VERIFY_SMS_API_URL, headers=headers, data=json.dumps(payload), timeout=10
-        )
-        if response.status_code == 200:
-            result = response.json()
-            if result.get("status") == 1:
-                logger.info(f"SMS sent successfully to {phone_number}")
-                return True
-            else:
-                logger.error(f"SMS sending failed: {result}")
-                return False
-        else:
-            logger.error(f"SMS API error: {response.status_code} - {response.text}")
-            return False
-    except Exception as e:
-        logger.exception(f"Error sending SMS to {phone_number}: {e}")
-        return False
+    """Compatibility wrapper for existing Celery callers."""
+    return bool(send_sms_ir_verification(phone_number, verification_code, template_id))
 
 
 def send_reset_password_sms(phone_number: str, verification_code: str):
