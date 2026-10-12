@@ -3,7 +3,12 @@ import hashlib
 import logging
 import requests
 from django.core.validators import RegexValidator
-from authentication.constants import SMS_API_KEY, VERIFY_SMS_API_URL
+from authentication.constants import (
+    SMS_API_KEY,
+    SMS_TEMPLATE_ID,
+    RESET_PASSWORD_SMS_TEMPLATE_ID,
+    VERIFY_SMS_API_URL,
+)
 
 
 logger = logging.getLogger("otp_api")
@@ -19,16 +24,12 @@ def hash_code(code: str, salt: str) -> str:
     return hashlib.sha256(f"{salt}{code}".encode()).hexdigest()
 
 
-# TODO: Add custom template id
 def send_verification_sms(
-    phone_number: str, verification_code: str, template_id: int = 334868
+    phone_number: str, verification_code: str, template_id: int = SMS_TEMPLATE_ID
 ) -> bool:
-    """
-    Send verification SMS using sms.ir API
-    template_id: 334868 for register, 752245 for reset-password
-    """
-    if not SMS_API_KEY or not VERIFY_SMS_API_URL:
-        logger.error("SMS_API_KEY or VERIFY_SMS_API_URL not configured")
+    """Send a verification code using the configured sms.ir template."""
+    if not SMS_API_KEY or not VERIFY_SMS_API_URL or not template_id:
+        logger.error("SMS_API_KEY, VERIFY_SMS_API_URL or SMS template ID not configured")
         return False
 
     payload = {
@@ -45,7 +46,7 @@ def send_verification_sms(
 
     try:
         response = requests.post(
-            VERIFY_SMS_API_URL, headers=headers, data=json.dumps(payload)
+            VERIFY_SMS_API_URL, headers=headers, data=json.dumps(payload), timeout=10
         )
         if response.status_code == 200:
             result = response.json()
@@ -64,5 +65,7 @@ def send_verification_sms(
 
 
 def send_reset_password_sms(phone_number: str, verification_code: str):
-    """Send reset password SMS using templateId 752245"""
-    return send_verification_sms(phone_number, verification_code, template_id=752245)
+    """Send reset-password SMS using its configured template ID."""
+    return send_verification_sms(
+        phone_number, verification_code, template_id=RESET_PASSWORD_SMS_TEMPLATE_ID
+    )

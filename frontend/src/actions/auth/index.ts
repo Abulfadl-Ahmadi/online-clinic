@@ -1,4 +1,5 @@
 export * from "./otp.action";
+export * from "./reset-password.action";
 export { default as logoutAction } from "./logout.action";
 export { default as requireAuth } from "./requireAuth.action";
 export { default as registerAction } from "./register.action";

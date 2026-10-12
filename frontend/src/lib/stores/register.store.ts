@@ -69,9 +69,9 @@ const useRegisterStore = create<RegisterState>()(
 				gender: state.gender,
 				// extra
 				step: state.step,
-				phoneVerified: state.phoneVerified,
 			}),
 			onRehydrateStorage: () => (state) => {
+				state?.set({ phoneVerified: false });
 				state?.setHasHydrated(true);
 			},
 		},

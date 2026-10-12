@@ -37,8 +37,9 @@ class VerifyOTPSerializer(serializers.Serializer):
         phone_number = normalize_phone_number(attrs.get("phone_number"))
 
         # Validate the code
+        otp_type = self.context.get("otp_type")
         otp = (
-            OTPModel.objects.filter(phone_number=phone_number, is_used=False)
+            OTPModel.objects.filter(phone_number=phone_number, type=otp_type, is_used=False)
             .order_by("-created_at")
             .first()
         )

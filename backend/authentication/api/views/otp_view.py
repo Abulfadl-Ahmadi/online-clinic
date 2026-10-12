@@ -8,11 +8,14 @@ from django.contrib.auth import get_user_model
 from rest_framework.permissions import AllowAny
 from rest_framework.throttling import ScopedRateThrottle
 
-from authentication.tasks import send_sms_task
+from authentication.utils import send_verification_sms
 from accounts.utils import normalize_phone_number
 from accounts.constants import UserRole, UserStatus
 from authentication.models.otp_model import OTPModel
-from authentication.constants import SMS_IN_DEV, OTPType
+from authentication.constants import (
+    SMS_IN_DEV, SMS_TEMPLATE_ID, RESET_PASSWORD_SMS_TEMPLATE_ID,
+    SMS_API_KEY, VERIFY_SMS_API_URL, OTPType,
+)
 from authentication.api.serializers import SendOTPSerializer, VerifyOTPSerializer
 
 
@@ -33,15 +36,12 @@ def log_debug_sms(phone: str, code: str):
     print("================================\n")
 
 
-def send_otp_sms(phone: str, code: str, template_id: int = 334868):
-    """
-    Sends the OTP to user phone number.
-    Uses async Celery task in production, and console in dev mode.
-    """
-    if not SMS_IN_DEV and settings.DEBUG:
+def send_otp_sms(phone: str, code: str, template_id: int) -> bool:
+    """Return True only when the provider confirms delivery request acceptance."""
+    if settings.DEBUG and not SMS_IN_DEV:
         log_debug_sms(phone, code)
-    else:
-        send_sms_task.delay(phone, code, template_id=template_id)  # type: ignore
+        return True
+    return send_verification_sms(phone, code, template_id=template_id)
 
 
 # ---------------------------------------------------------------------
@@ -66,18 +66,30 @@ class SendOTPView(APIView):
 
         phone = normalize_phone_number(serializer.validated_data["phone_number"])  # type: ignore
         otp_type = request.query_params.get("type", OTPType.LOGIN)
+        if otp_type not in OTPType.values:
+            return Response({"message": "Invalid OTP type."}, status=status.HTTP_400_BAD_REQUEST)
 
-        if otp_type == OTPType.REGISTER:
-            user = UserModel.objects.filter(phone_number=phone).first()
-            if user:
-                return Response(
-                    {"message": "User already exists."},
-                    status=status.HTTP_409_CONFLICT,
-                )
+        user = UserModel.objects.filter(phone_number=phone).first()
+        if otp_type == OTPType.REGISTER and user:
+            return Response({"message": "User already exists."}, status=status.HTTP_409_CONFLICT)
+        if otp_type in (OTPType.LOGIN, OTPType.RESET_PASSWORD) and (
+            not user or user.status != UserStatus.ACTIVE
+        ):
+            return Response({"message": "Account unavailable."}, status=status.HTTP_400_BAD_REQUEST)
+
+        template_id = (
+            RESET_PASSWORD_SMS_TEMPLATE_ID if otp_type == OTPType.RESET_PASSWORD
+            else SMS_TEMPLATE_ID
+        )
+        if not (settings.DEBUG and not SMS_IN_DEV) and not (
+            SMS_API_KEY and VERIFY_SMS_API_URL and template_id
+        ):
+            return Response({"message": "SMS service unavailable."}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
         otp = OTPModel.generate_otp(phone_number=phone, type=otp_type)  # type: ignore
-
-        send_otp_sms(phone, otp.plain_code)  # type: ignore
+        if not send_otp_sms(phone, otp.plain_code, template_id):  # type: ignore
+            otp.delete()
+            return Response({"message": "SMS delivery failed."}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
         logger.info(
             f"OTP generated for {phone} ({otp_type})",
@@ -109,14 +121,14 @@ class VerifyOTPView(APIView):
     throttle_classes = [ScopedRateThrottle]
 
     def post(self, request: Request) -> Response:
-        serializer = VerifyOTPSerializer(data=request.data)
+        otp_type = request.query_params.get("type", OTPType.LOGIN)
+        if otp_type not in (OTPType.LOGIN, OTPType.REGISTER):
+            return Response({"message": "Invalid OTP type."}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = VerifyOTPSerializer(data=request.data, context={"otp_type": otp_type})
         serializer.is_valid(raise_exception=True)
 
         otp_instance: OTPModel = serializer.validated_data["otp_instance"]  # type: ignore
         phone = normalize_phone_number(serializer.validated_data["phone_number"])  # type: ignore
-        otp_type = request.query_params.get("type", OTPType.LOGIN)
-
-        otp_instance.mark_used()
 
         # --------------------------------------------------------------
         # Handle user by OTP type
@@ -153,6 +165,8 @@ class VerifyOTPView(APIView):
                 {"message": "User account is not active."},
                 status=status.HTTP_403_FORBIDDEN,
             )
+
+        otp_instance.mark_used()
 
         # --------------------------------------------------------------
         # Generate JWT tokens

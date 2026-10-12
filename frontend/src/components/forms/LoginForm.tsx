@@ -44,7 +44,8 @@ function LoginForm() {
 					</TabsContent>
 				</Tabs>
 			</CardContent>
-			<CardFooter className="flex flex-col items-center justify-center">
+			<CardFooter className="flex flex-col items-center justify-center gap-2">
+				<Link href="/auth/forgot-password" className="text-primary font-medium hover:underline">رمز عبور را فراموش کرده‌اید؟</Link>
 				<p className="text-sm text-muted-foreground">
 					حساب کاربری ندارید؟{" "}
 					<Link

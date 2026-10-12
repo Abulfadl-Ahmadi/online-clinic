@@ -1,5 +1,4 @@
 import uuid
-import random
 import secrets
 from django.db import models
 from datetime import timedelta
@@ -65,7 +64,7 @@ class OTPModel(models.Model):
         if self.is_used or self.expired:
             return False
 
-        if self.attempts > MAX_VERIFY_ATTEMPTS:
+        if self.attempts >= MAX_VERIFY_ATTEMPTS:
             return False
 
         OTPModel.objects.filter(pk=self.pk).update(attempts=F("attempts") + 1)
@@ -93,7 +92,7 @@ class OTPModel(models.Model):
         ).delete()
 
         # Generate a new code
-        code = f"{random.randint(0, 10**OTP_LENGTH - 1):0{OTP_LENGTH}d}"
+        code = f"{secrets.randbelow(10**OTP_LENGTH):0{OTP_LENGTH}d}"
         # Hash the code and create the OTP instance
         salt = secrets.token_hex(16)
         code_hash = hash_code(code, salt)

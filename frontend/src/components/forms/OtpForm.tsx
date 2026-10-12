@@ -75,6 +75,7 @@ function OtpForm(props: OtpFormProps) {
 									placeholder="09xxxxxxxxx"
 									type="tel"
 									{...field}
+									dir="ltr"
 									disabled={otpSent}
 								/>
 							</FormControl>
@@ -105,8 +106,10 @@ function OtpForm(props: OtpFormProps) {
 									<FormControl>
 										<Input
 											placeholder="123456"
-											type="number"
+											type="text"
 											inputMode="numeric"
+											autoComplete="one-time-code"
+											dir="ltr"
 											{...field}
 											ref={(e) => {
 												field.ref(e);

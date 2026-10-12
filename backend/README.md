@@ -152,9 +152,11 @@ m.
     # ---------------------------------------------------------------
     # in MB
     MAX_AVATAR_SIZE="2"
-    SMS_IN_DEV="True"
+    SMS_IN_DEV="True"  # With DEBUG=False this does not bypass sms.ir; DEBUG=True and False prints code locally
     SMS_API_KEY="your-api-key"
     VERIFY_SMS_API_URL="https://api.sms.ir/v1/send/verify"
+    SMS_TEMPLATE_ID="0"  # Replace 0 with your numeric sms.ir template ID
+    RESET_PASSWORD_SMS_TEMPLATE_ID="0"  # Replace if using a separate reset-password template
 
     # ---------------------------------------------------------------
     # Celery Configuration

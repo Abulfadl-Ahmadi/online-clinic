@@ -41,9 +41,9 @@ async function sendOtpAction(
 		}
 		return {
 			success: false,
-			message: "خطا در ارسال کد",
-			statusCode: 400,
-			type: "BadRequest",
+			message: response.statusCode === 503 ? "سرویس پیامک در دسترس نیست. دوباره تلاش کنید." : "ارسال کد انجام نشد. شماره را بررسی کنید.",
+			statusCode: response.statusCode,
+			type: response.type,
 		};
 	}
 

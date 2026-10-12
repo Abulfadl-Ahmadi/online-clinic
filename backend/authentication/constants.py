@@ -5,6 +5,10 @@ from django.db import models
 SMS_IN_DEV = bool(config("SMS_IN_DEV", default=False, cast=bool))
 SMS_API_KEY = str(config("SMS_API_KEY", default="", cast=str))
 VERIFY_SMS_API_URL = str(config("VERIFY_SMS_API_URL", default="", cast=str))
+SMS_TEMPLATE_ID = config("SMS_TEMPLATE_ID", default=0, cast=int)
+RESET_PASSWORD_SMS_TEMPLATE_ID = config(
+    "RESET_PASSWORD_SMS_TEMPLATE_ID", default=0, cast=int
+)
 
 MAX_AVATAR_SIZE = int(str(config("MAX_AVATAR_SIZE", 2, cast=int)))
 ALLOWED_EXTENSIONS = "png,jpg,jpeg".split(",")

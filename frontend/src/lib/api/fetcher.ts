@@ -16,16 +16,8 @@ async function apiFetch<T>(
 		console.log("\n🌐 [apiFetch] Request Details:");
 		console.log("  URL:", fullUrl);
 		console.log("  Method:", options.method || "GET");
-		console.log("  Headers:", JSON.stringify(options.headers, null, 2));
-		if (options.body) {
-			console.log("  Body (raw):", options.body);
-			try {
-				const parsedBody = JSON.parse(options.body as string);
-				console.log("  Body (parsed):", JSON.stringify(parsedBody, null, 2));
-			} catch {
-				console.log("  Body: (not JSON)");
-			}
-		}
+		// Never log headers: they may contain bearer tokens.
+		// Never log request bodies: authentication requests contain OTPs and passwords.
 		
 		const response = await fetch(fullUrl, {
 			...options,
@@ -43,7 +35,7 @@ async function apiFetch<T>(
 			?.includes("application/json");
 		const body = isJson ? await response.json().catch(() => null) : null;
 
-		console.log("  Response Body (raw):", JSON.stringify(body, null, 2));
+		// Responses may contain access and refresh tokens; do not log them.
 
 		if (!response.ok) {
 			const errorType =
@@ -68,7 +60,7 @@ async function apiFetch<T>(
 		// Convert snake_case keys to camelCase
 		const transformedData = keysToCamel<T>(body);
 
-		console.log("  Response Body (transformed):", JSON.stringify(transformedData, null, 2));
+
 		console.log("  ✅ Request Successful!\n");
 
 		return {
