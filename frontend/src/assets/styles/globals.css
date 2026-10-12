@@ -316,6 +316,72 @@ input, textarea, select {
 }
 
 
+/* The hero gives the portrait its own stage: no text or badge crosses the face. */
+.hero-stage { background: var(--brand-page); }
+.hero-stage-grid { background-image: linear-gradient(to bottom, color-mix(in srgb, var(--brand-ink) 5%, transparent) 1px, transparent 1px); background-size: 100% 64px; mask-image: linear-gradient(to bottom, transparent, black 24%, transparent 90%); }
+.hero-stage-glow { background: radial-gradient(ellipse 50% 55% at 75% 48%, color-mix(in srgb, var(--brand-teal) 14%, transparent), transparent 80%); }
+.hero-eyebrow-mark { display: inline-block; width: 2rem; height: 2px; background: var(--brand-wine); }
+.hero-title { font-size: clamp(2.75rem, 5.7vw, 6rem); font-weight: 900; line-height: 1.28; letter-spacing: 0; }
+.hero-title > span:last-child { white-space: nowrap; }
+.hero-blur-word { display: inline-block; animation: hero-word-enter 420ms cubic-bezier(.16,1,.3,1) both; }
+@keyframes hero-word-enter { from { opacity: .1; filter: blur(6px); transform: translateY(10px); } to { opacity: 1; filter: blur(0); transform: translateY(0); } }
+.hero-primary { background: var(--brand-ink); color: var(--brand-page); box-shadow: 0 16px 30px -22px var(--brand-shadow); transition: transform 260ms ease, box-shadow 260ms ease; }
+.hero-primary:hover { transform: translateY(-3px); box-shadow: 0 22px 38px -23px var(--brand-shadow); }
+.hero-secondary { border: 1px solid var(--brand-line); color: var(--brand-ink); background: var(--brand-surface); transition: background-color 260ms ease, transform 260ms ease; }
+.hero-secondary:hover { background: var(--brand-soft); transform: translateY(-2px); }
+.hero-photo-accent { border: 1px solid color-mix(in srgb, var(--brand-teal) 38%, transparent); transform: rotate(2deg); }
+.hero-photo { box-shadow: 0 30px 75px -42px var(--brand-shadow); }
+.hero-photo-caption { border-inline-start: 3px solid var(--brand-teal); padding-inline-start: 1rem; }
+@media (max-width: 420px) { .hero-title { font-size: clamp(2.4rem, 11vw, 3.1rem); } .hero-title > span:last-child { white-space: normal; } .hero-credibility p:first-child { font-size: 1rem; } }
+@media (prefers-reduced-motion: reduce) { .hero-blur-word { animation: none; } }
+
+/* Focused authentication surface shared by login, registration and recovery. */
+.auth-stage { background: var(--brand-page); }
+.auth-stage-grid { background-image: radial-gradient(ellipse 55% 45% at 80% 10%, color-mix(in srgb, var(--brand-teal) 12%, transparent), transparent), linear-gradient(to bottom, color-mix(in srgb, var(--brand-ink) 4%, transparent) 1px, transparent 1px); background-size: cover, 100% 72px; }
+.auth-panel { box-shadow: 0 28px 80px -55px var(--brand-shadow); }
+.auth-photo { box-shadow: 0 24px 70px -50px var(--brand-shadow); }
+.auth-input { min-height: 3rem; background: var(--brand-page); color: var(--brand-ink); border-color: var(--brand-line); }
+.auth-input:focus-visible { outline: 2px solid var(--brand-teal); outline-offset: 2px; }
+.auth-submit { min-height: 3rem; background: var(--brand-ink); color: var(--brand-page); font-weight: 700; transition: filter 200ms ease, transform 200ms ease; }
+.auth-submit:hover { background: var(--brand-ink); color: var(--brand-page); filter: brightness(1.16); transform: translateY(-1px); }
+.auth-submit:disabled { transform: none; }
+@media (prefers-reduced-motion: reduce) { .auth-submit { transition: none; } }
+
+/* Dialogs are portaled outside .brand-page, so gallery colors must live on the portal itself. */
+.gallery-viewer {
+	--gallery-surface: #ffffff;
+	--gallery-ink: #123e46;
+	--gallery-soft: #e7f2f0;
+	--gallery-mist: #edf5f3;
+	--gallery-teal: #4b8a83;
+	--gallery-line: color-mix(in srgb, var(--gallery-ink) 14%, transparent);
+	--brand-surface: var(--gallery-surface);
+	--brand-ink: var(--gallery-ink);
+	--brand-soft: var(--gallery-soft);
+	--brand-mist: var(--gallery-mist);
+	--brand-teal: var(--gallery-teal);
+	--brand-line: var(--gallery-line);
+	background-color: var(--gallery-surface);
+	color: var(--gallery-ink);
+	border-color: var(--gallery-line);
+}
+.dark .gallery-viewer {
+	--gallery-surface: #16343a;
+	--gallery-ink: #d9f0eb;
+	--gallery-soft: #204850;
+	--gallery-mist: #122b31;
+	--gallery-teal: #7fc4b8;
+}
+.gallery-viewer :is(button):focus-visible { outline: 3px solid var(--gallery-teal); outline-offset: 2px; }
+
+/* Secondary public pages share a quieter, editorial counterpart to the home hero. */
+.public-intro { background: var(--brand-page); }
+.public-intro-pattern { background: radial-gradient(ellipse 55% 70% at 86% 42%, color-mix(in srgb, var(--brand-teal) 12%, transparent), transparent 76%); }
+.public-intro-image { box-shadow: 0 28px 68px -42px var(--brand-shadow); }
+.public-info-strip { background: var(--brand-mist); }
+.public-info-strip > * + * { border-inline-start: 1px solid var(--brand-line); }
+@media (max-width: 639px) { .public-info-strip > * + * { border-inline-start: 0; border-block-start: 1px solid var(--brand-line); } }
+
 /* Existing public pages use a few explicit Tailwind color utilities. Keep those
    legacy utility usages legible until they are fully migrated to brand tokens. */
 .dark .brand-page .bg-white, .dark .brand-page .bg-white\/70, .dark .brand-page .bg-white\/75, .dark .brand-page .bg-white\/90 { background-color: var(--brand-surface); }
