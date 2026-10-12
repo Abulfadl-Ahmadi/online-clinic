@@ -9,14 +9,8 @@ import { StepProgress } from "@/components/common";
 
 import {
 	Button,
-	Card,
-	CardContent,
-	CardHeader,
-	CardTitle,
-	CardDescription,
 	Spinner,
 	Form,
-	CardFooter,
 } from "@/components/ui";
 
 function RegisterForm() {
@@ -32,25 +26,20 @@ function RegisterForm() {
 	} = useRegisterForm();
 
 	return (
-		<Card className="w-full max-w-xs">
-			<CardHeader className="flex flex-col items-center justify-center text-center gap-1">
-				<CardTitle><h1 className="text-xl font-bold">ثبت‌نام در کلینیک</h1></CardTitle>
-				<CardDescription>
-					اطلاعات زیر را برای ثبت‌نام وارد کنید
-				</CardDescription>
-			</CardHeader>
+		<div className="w-full">
 
 			{!phoneVerified ? (
-				<CardContent>
+				<div>
 					<OtpForm
 						OtpType="register"
 						onPhoneVerified={() => {
 							set({ phoneVerified: true });
 						}}
 					/>
-				</CardContent>
+				</div>
 			) : (
-				<CardContent className="flex flex-col gap-4">
+				<div className="flex flex-col gap-6">
+					<p className="text-sm font-semibold text-[var(--brand-teal)]">اطلاعات حساب · مرحلهٔ {String(step).replace(/\d/g, digit => "۰۱۲۳۴۵۶۷۸۹"[Number(digit)])} از {String(totalSteps).replace(/\d/g, digit => "۰۱۲۳۴۵۶۷۸۹"[Number(digit)])}</p>
 					<StepProgress step={step} totalSteps={totalSteps} />
 
 					<Form {...form}>
@@ -79,7 +68,7 @@ function RegisterForm() {
 										type="button"
 										variant="outline"
 										onClick={handleBack}
-										className="flex-1">
+										className="min-h-12 flex-1">
 										قبلی
 									</Button>
 								)}
@@ -87,13 +76,13 @@ function RegisterForm() {
 									<Button
 										type="button"
 										onClick={handleNext}
-										className="flex-1">
+										className="auth-submit flex-1">
 										بعدی
 									</Button>
 								) : (
 									<Button
 										type="submit"
-										className="flex-1"
+										className="auth-submit flex-1"
 										disabled={
 											form.formState.isSubmitting ||
 											!form.formState.isValid
@@ -108,10 +97,10 @@ function RegisterForm() {
 							</div>
 						</form>
 					</Form>
-				</CardContent>
+				</div>
 			)}
 
-			<CardFooter className="flex flex-col items-center justify-center">
+			<div className="mt-8 flex flex-col items-center border-t border-[var(--brand-line)] pt-6">
 				<p className="text-sm text-muted-foreground">
 					حساب کاربری دارید؟{" "}
 					<Link
@@ -120,8 +109,8 @@ function RegisterForm() {
 						ورود
 					</Link>
 				</p>
-			</CardFooter>
-		</Card>
+			</div>
+		</div>
 	);
 }
 

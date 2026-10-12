@@ -26,9 +26,12 @@ function StepAccountInfo({ form }: StepAccountInfoProps) {
 						<FormLabel>کد ملی</FormLabel>
 						<FormControl>
 							<Input
-								type="number"
+								type="text"
+								inputMode="numeric"
 								autoFocus={true}
-								placeholder={"042..."}
+								dir="ltr"
+								className="auth-input"
+								placeholder="۰۰۱۲۳۴۵۶۷۸"
 								{...field}
 							/>
 						</FormControl>
@@ -48,6 +51,7 @@ function StepAccountInfo({ form }: StepAccountInfoProps) {
 								type="text"
 								autoComplete="name"
 								placeholder={"نام خود را وارد کنید"}
+								className="auth-input"
 								{...field}
 							/>
 						</FormControl>
@@ -67,6 +71,7 @@ function StepAccountInfo({ form }: StepAccountInfoProps) {
 								type="text"
 								autoComplete="family-name"
 								placeholder={"نام خانوادگی خود را وارد کنید"}
+								className="auth-input"
 								{...field}
 							/>
 						</FormControl>

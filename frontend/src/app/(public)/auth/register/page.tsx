@@ -1,10 +1,11 @@
 import { RegisterForm } from "@/components/forms";
+import { AuthShell } from "@/components/forms/AuthShell";
 
 function RegisterPage() {
 	return (
-		<div className="flex min-h-dvh items-center justify-center px-4 pb-12 pt-24">
+		<AuthShell title="ساخت حساب کاربری" description="شماره موبایل خود را تأیید کنید و اطلاعات لازم برای نوبت‌دهی را تکمیل کنید.">
 			<RegisterForm />
-		</div>
+		</AuthShell>
 	);
 }
 

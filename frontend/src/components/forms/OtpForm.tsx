@@ -61,7 +61,7 @@ function OtpForm(props: OtpFormProps) {
 					e.preventDefault();
 					form.handleSubmit(onSubmit)();
 				}}
-				className="flex flex-col gap-6"
+				className="flex flex-col gap-5"
 				dir="rtl">
 				{/* Phone number field */}
 				<FormField
@@ -69,14 +69,18 @@ function OtpForm(props: OtpFormProps) {
 					name="phone_number"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>شماره تلفن</FormLabel>
+							<FormLabel>شماره موبایل</FormLabel>
 							<FormControl>
 								<Input
-									placeholder="09xxxxxxxxx"
+									placeholder="09123456789"
 									type="tel"
+									inputMode="tel"
+									autoComplete="tel"
+									className="auth-input"
 									{...field}
 									dir="ltr"
 									disabled={otpSent}
+									aria-invalid={!!form.formState.errors.phone_number}
 								/>
 							</FormControl>
 							<FormMessage />
@@ -105,12 +109,14 @@ function OtpForm(props: OtpFormProps) {
 									<FormLabel>کد یکبار مصرف</FormLabel>
 									<FormControl>
 										<Input
-											placeholder="123456"
+											placeholder="۱۲۳۴۵۶"
+											className="auth-input text-center text-xl font-bold tabular-nums"
 											type="text"
 											inputMode="numeric"
 											autoComplete="one-time-code"
 											dir="ltr"
 											{...field}
+											aria-invalid={!!form.formState.errors.otp}
 											ref={(e) => {
 												field.ref(e);
 												otpInputRef.current = e;
@@ -125,8 +131,7 @@ function OtpForm(props: OtpFormProps) {
 						{/* Countdown + resend */}
 						<div className="flex items-center justify-between text-sm text-muted-foreground">
 							<span>
-								زمان باقی‌مانده: {minutes}:
-								{seconds.toString().padStart(2, "0")}
+								زمان باقی‌مانده: {`${minutes}:${seconds.toString().padStart(2, "0")}`.replace(/\d/g, digit => "۰۱۲۳۴۵۶۷۸۹"[Number(digit)])}
 							</span>
 							<Button
 								variant="link"
@@ -141,7 +146,7 @@ function OtpForm(props: OtpFormProps) {
 						{/* Submit OTP */}
 						<Button
 							type="submit"
-							className="w-full"
+							className="auth-submit w-full"
 							disabled={loading}>
 							{loading && (
 								<Spinner className="size-4 me-2" />
@@ -155,14 +160,13 @@ function OtpForm(props: OtpFormProps) {
 				{!otpSent && (
 					<Button
 						type="button"
-						variant="outline"
-						className="w-full"
+						className="auth-submit w-full"
 						onClick={handleSendOtp}
 						disabled={loading}>
 						{loading && (
 							<Spinner className="size-4 me-2" />
 						)}
-						ارسال کد
+						ارسال کد تأیید
 					</Button>
 				)}
 			</form>

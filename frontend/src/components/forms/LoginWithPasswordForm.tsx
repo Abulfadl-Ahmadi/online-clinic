@@ -27,12 +27,17 @@ function LoginWithPasswordForm() {
 					name="phone_number"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>شماره تلفن</FormLabel>
+							<FormLabel>شماره موبایل</FormLabel>
 							<FormControl>
 								<Input
-									placeholder="09xxxxxxxxx"
+									placeholder="09123456789"
 									{...field}
 									type="tel"
+									inputMode="tel"
+									autoComplete="tel"
+									dir="ltr"
+									className="auth-input"
+									aria-invalid={!!form.formState.errors.phone_number}
 								/>
 							</FormControl>
 							<FormMessage />
@@ -51,6 +56,10 @@ function LoginWithPasswordForm() {
 									type="password"
 									placeholder="••••••••"
 									{...field}
+									autoComplete="current-password"
+									dir="ltr"
+									className="auth-input"
+									aria-invalid={!!form.formState.errors.password}
 								/>
 							</FormControl>
 							<FormMessage />
@@ -58,7 +67,7 @@ function LoginWithPasswordForm() {
 					)}
 				/>
 
-				<Button type="submit" className="w-full" disabled={loading}>
+				<Button type="submit" className="auth-submit w-full" disabled={loading}>
 					{loading ? (
 						<Spinner className="size-4 me-2" />
 					) : null}

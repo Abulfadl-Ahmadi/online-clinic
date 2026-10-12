@@ -5,32 +5,19 @@ import Link from "next/link";
 import OtpForm from "./OtpForm";
 import LoginWithPasswordForm from "./LoginWithPasswordForm";
 import {
-	Card,
-	CardContent,
-	CardHeader,
-	CardTitle,
 	Tabs,
 	TabsList,
 	TabsTrigger,
 	TabsContent,
-	CardDescription,
-	CardFooter,
 } from "@/components/ui";
 
 function LoginForm() {
 	return (
-		<Card className="w-full max-w-xs shadow-xl">
-			<CardHeader className="text-center">
-				<CardTitle><h1 className="text-xl font-bold">ورود به حساب کاربری</h1></CardTitle>
-				<CardDescription>
-					جهت ادامه، لطفا اطلاعات زیر را کامل کنید.
-				</CardDescription>
-			</CardHeader>
-			<CardContent className="w-full">
+		<div className="w-full">
 				<Tabs
 					defaultValue="password"
-					className="items-center justify-center w-full">
-					<TabsList className="grid grid-cols-2 mb-6 w-full">
+					className="w-full">
+					<TabsList className="mb-6 grid h-12 w-full grid-cols-2">
 						<TabsTrigger value="password">رمز عبور</TabsTrigger>
 						<TabsTrigger value="otp">رمز یکبار مصرف</TabsTrigger>
 					</TabsList>
@@ -43,8 +30,7 @@ function LoginForm() {
 						<OtpForm OtpType="login" />
 					</TabsContent>
 				</Tabs>
-			</CardContent>
-			<CardFooter className="flex flex-col items-center justify-center gap-2">
+			<div className="mt-8 flex flex-col items-center justify-center gap-3 border-t border-[var(--brand-line)] pt-6">
 				<Link href="/auth/forgot-password" className="text-primary font-medium hover:underline">رمز عبور را فراموش کرده‌اید؟</Link>
 				<p className="text-sm text-muted-foreground">
 					حساب کاربری ندارید؟{" "}
@@ -54,8 +40,8 @@ function LoginForm() {
 						ثبت‌نام
 					</Link>
 				</p>
-			</CardFooter>
-		</Card>
+			</div>
+		</div>
 	);
 }
 
