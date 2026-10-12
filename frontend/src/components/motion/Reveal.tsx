@@ -16,10 +16,10 @@ export function Reveal({ children, className, delay = 0, amount = 0.18 }: Reveal
 	return (
 		<motion.div
 			className={className}
-			initial={shouldReduceMotion ? false : { opacity: 0, y: 28 }}
+			initial={shouldReduceMotion ? false : { opacity: 0, y: 16 }}
 			whileInView={{ opacity: 1, y: 0 }}
-			viewport={{ once: true, amount }}
-			transition={{ duration: shouldReduceMotion ? 0 : 0.58, delay: shouldReduceMotion ? 0 : delay, ease: [0.16, 1, 0.3, 1] }}>
+			viewport={{ once: true, amount, margin: "0px 0px -48px 0px" }}
+			transition={{ duration: shouldReduceMotion ? 0 : 0.38, delay: shouldReduceMotion ? 0 : delay, ease: [0.22, 1, 0.36, 1] }}>
 			{children}
 		</motion.div>
 	);
@@ -31,7 +31,7 @@ interface StaggerProps extends PropsWithChildren {
 }
 
 /** Reveals direct children sequentially after their group reaches the viewport. */
-export function Stagger({ children, className, stagger = 0.08 }: StaggerProps) {
+export function Stagger({ children, className, stagger = 0.055 }: StaggerProps) {
 	const shouldReduceMotion = useReducedMotion();
 
 	return (
@@ -60,8 +60,8 @@ export function StaggerItem({ children, className }: StaggerItemProps) {
 		<motion.div
 			className={className}
 			variants={{
-				hidden: shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 22, scale: 0.985 },
-				show: { opacity: 1, y: 0, scale: 1, transition: { duration: shouldReduceMotion ? 0 : 0.5, ease: [0.16, 1, 0.3, 1] } },
+				hidden: shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 14 },
+				show: { opacity: 1, y: 0, transition: { duration: shouldReduceMotion ? 0 : 0.36, ease: [0.22, 1, 0.36, 1] } },
 			}}>
 			{children}
 		</motion.div>

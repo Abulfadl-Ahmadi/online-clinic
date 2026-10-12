@@ -28,7 +28,7 @@ describe("public content reveals", () => {
 
   it("preserves purposeful entrance and timing without reduced motion", () => {
     render(<Reveal delay={0.2}>Introduction</Reveal>);
-    expect(reduced.motionProps[0].initial).toEqual({ opacity: 0, y: 28 });
-    expect(reduced.motionProps[0].transition).toMatchObject({ delay: 0.2, duration: 0.58 });
+    expect(reduced.motionProps[0].initial).toEqual({ opacity: 0, y: 16 });
+    expect(reduced.motionProps[0].transition).toMatchObject({ delay: 0.2, duration: 0.38 });
   });
 });
