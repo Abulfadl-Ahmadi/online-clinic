@@ -6,6 +6,7 @@ import { notFound, redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import Link from "next/link";
 import { DeleteArticleButton } from "@/components/articles/DeleteArticleButton";
+import { MarkdownEditor } from "@/components/articles/MarkdownEditor";
 
 interface PageProps { params: Promise<{ slug: string }> }
 
@@ -103,10 +104,7 @@ export default async function AdminEditArticlePage(props: PageProps) {
           <label htmlFor="summary" className="mb-1 block text-xs font-medium">خلاصه</label>
           <textarea id="summary" name="summary" defaultValue={a.summary} rows={3} placeholder="خلاصه کوتاه" className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm" required />
         </div>
-        <div>
-          <label htmlFor="content" className="mb-1 block text-xs font-medium">متن مقاله</label>
-          <textarea id="content" name="content" defaultValue={a.content} rows={10} placeholder="متن کامل مقاله" className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm" required />
-        </div>
+        <MarkdownEditor defaultValue={a.content} />
         <div>
           <label htmlFor="coverImage" className="mb-1 block text-xs font-medium">تصویر کاور (URL)</label>
           <input id="coverImage" name="coverImage" defaultValue={a.coverImage ?? ''} placeholder="https://..." className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm" />

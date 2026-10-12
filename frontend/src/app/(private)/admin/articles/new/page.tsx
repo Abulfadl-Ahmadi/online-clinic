@@ -3,8 +3,9 @@
 import requireAuth from "@/actions/auth/requireAuth.action";
 import { listCategories, listTags, createArticle } from "@/actions";
 import { redirect } from "next/navigation";
+import { MarkdownEditor } from "@/components/articles/MarkdownEditor";
 
-export default async function AdminNewArticlePage() {
+export default async function AdminNewArticlePage({ searchParams }: { searchParams?: Promise<{ error?: string }> }) {
   await requireAuth({ requiredRoles: ["admin"], redirectPath: "/auth/login" });
 
   const [cats, tags] = await Promise.all([
@@ -32,23 +33,20 @@ export default async function AdminNewArticlePage() {
       tags,
     });
 
-    console.log("📋 Article creation result:", JSON.stringify(res, null, 2));
-
     if (res.success) {
       redirect(`/articles/${res.data.slug}`);
-    } else {
-      console.error("❌ Failed to create article:", res.message);
     }
-
-    // TODO: handle error via search params or a flash store
+    redirect(`/admin/articles/new?error=${encodeURIComponent(res.message || "خطا در ایجاد مقاله")}`);
   }
 
+  const error = (await searchParams)?.error;
   const categoryOptions = cats.success ? cats.data.results : [];
   const tagOptions = tags.success ? tags.data.results : [];
 
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-xl font-bold">ایجاد مقاله جدید</h1>
+      {error && <p role="alert" className="rounded-xl border border-destructive/40 bg-card p-4 text-foreground">ایجاد مقاله انجام نشد: {error}. لطفاً اطلاعات را بررسی کرده و دوباره تلاش کنید.</p>}
       <form action={submit} className="flex flex-col gap-4" dir="rtl">
         <div>
           <label htmlFor="title" className="mb-1 block text-xs font-medium">عنوان</label>
@@ -58,10 +56,7 @@ export default async function AdminNewArticlePage() {
           <label htmlFor="summary" className="mb-1 block text-xs font-medium">خلاصه</label>
           <textarea id="summary" name="summary" rows={3} placeholder="خلاصه کوتاه" className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm" required />
         </div>
-        <div>
-          <label htmlFor="content" className="mb-1 block text-xs font-medium">متن مقاله</label>
-          <textarea id="content" name="content" rows={10} placeholder="متن کامل مقاله" className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm" required />
-        </div>
+        <MarkdownEditor />
         <div>
           <label htmlFor="coverImage" className="mb-1 block text-xs font-medium">تصویر کاور (URL)</label>
           <input id="coverImage" name="coverImage" placeholder="https://..." className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm" />
