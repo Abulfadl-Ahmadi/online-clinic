@@ -387,7 +387,22 @@ input, textarea, select {
 	outline-offset: 4px;
 }
 
+/* Magic UI-inspired accents: keep real text visible throughout every animation. */
+.clinic-shiny-text { color: var(--brand-ink); background-image: linear-gradient(105deg, var(--brand-ink) 20%, var(--brand-wine) 45%, var(--brand-teal) 52%, var(--brand-ink) 78%); background-size: 250% 100%; background-position: 100% 0; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: clinic-shine 7s ease-in-out infinite; }
+@keyframes clinic-shine { 0%, 15%, 85%, 100% { background-position: 100% 0; } 45%, 60% { background-position: 0 0; } }
+.clinic-dia-text { color: var(--brand-ink); background-image: linear-gradient(100deg, var(--brand-ink) 30%, var(--brand-wine) 48%, var(--brand-teal) 54%, var(--brand-ink) 72%); background-size: 260% 100%; background-position: 100% 0; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.clinic-dia-text[data-revealed="true"] { animation: clinic-dia-sweep 1.1s ease-out both; }
+@keyframes clinic-dia-sweep { from { background-position: 100% 0; } to { background-position: 0 0; } }
+.clinic-highlighter { padding-inline: .08em; box-decoration-break: clone; -webkit-box-decoration-break: clone; background-image: linear-gradient(transparent 66%, color-mix(in srgb, var(--brand-teal) 38%, transparent) 66%); background-size: 0 100%; background-position: right bottom; background-repeat: no-repeat; }
+.clinic-highlighter[data-revealed="true"] { animation: clinic-mark .65s ease-out both; }
+@keyframes clinic-mark { to { background-size: 100% 100%; } }
+.clinic-kinetic { display: inline-block; }
+.clinic-kinetic-letter { transform-origin: center bottom; }
+.clinic-kinetic:hover .clinic-kinetic-letter, .clinic-kinetic:focus-within .clinic-kinetic-letter { font-weight: 900; }
 @media (prefers-reduced-motion: reduce) {
+	.clinic-shiny-text, .clinic-dia-text { background: none; -webkit-text-fill-color: currentColor; }
+	.clinic-highlighter { background-size: 100% 100%; }
+
 	*, *::before, *::after {
 		scroll-behavior: auto !important;
 		transition-duration: 0.01ms !important;
