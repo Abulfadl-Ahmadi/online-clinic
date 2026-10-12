@@ -15,6 +15,8 @@ describe("English clinic gallery", () => {
     expect(screen.getByRole("heading", { name: "Explore the clinic" })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Enlarge clinic photo 1" }));
     expect(screen.getByRole("dialog")).toHaveAttribute("dir", "ltr");
+    expect(screen.getByRole("dialog")).toHaveClass("gallery-viewer");
+    expect(screen.getByRole("dialog")).not.toHaveClass("bg-transparent");
     expect(screen.getByRole("dialog")).toHaveTextContent("Inside Dr. Rahimi’s physiotherapy clinic");
     expect(screen.getAllByAltText("View 1 of Dr. Rahimi's physiotherapy clinic")).toHaveLength(2);
     expect(screen.getByRole("button", { name: "Next clinic photo" })).toBeInTheDocument();
@@ -31,6 +33,17 @@ describe("English clinic gallery", () => {
     expect(screen.getByRole("dialog")).toHaveTextContent("1 / 2");
     fireEvent.keyDown(screen.getByRole("dialog"), { key: "ArrowRight" });
     expect(screen.getByRole("dialog")).toHaveTextContent("2 / 2");
+  });
+
+  it("opens a readable viewer with close and nearby-photo controls", () => {
+    const images = ["/images/general/clinic/photo_2025-12-17_03-25-39.jpg", "/images/general/clinic/photo_2025-12-17_03-26-03.jpg"];
+    render(<ClinicGallery locale="en" images={images} />);
+    fireEvent.click(screen.getByRole("button", { name: "Enlarge clinic photo 1" }));
+    expect(screen.getByRole("button", { name: "Close gallery" })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Show photo 2" }));
+    expect(screen.getByRole("dialog")).toHaveTextContent("2 / 2");
+    fireEvent.click(screen.getByRole("button", { name: "Close gallery" }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
   it("shows an intentional empty state when no photos exist", () => {
