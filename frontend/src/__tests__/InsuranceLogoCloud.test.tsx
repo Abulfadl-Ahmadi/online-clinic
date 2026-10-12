@@ -10,16 +10,17 @@ vi.mock("@/components/motion/Reveal", () => ({
 }));
 
 describe("InsuranceLogoCloud", () => {
-	it("names only source-listed organizations and qualifies coverage", () => {
+	it("names the source-listed and newly confirmed insurers and qualifies coverage", () => {
 		render(<InsuranceLogoCloud />);
-		for (const name of ["تأمین اجتماعی", "خدمات درمانی", "نیروهای مسلح", "بانک مرکزی"]) {
+		for (const name of ["تأمین اجتماعی", "خدمات درمانی (بیمه سلامت)", "نیروهای مسلح", "بانک مرکزی", "بیمه کمک‌رسان SOS"]) {
 			expect(screen.getByText(name)).toBeInTheDocument();
 		}
 		expect(screen.getByRole("heading", { name: "بیمه‌ها و سازمان‌های طرف قرارداد" })).toBeInTheDocument();
 		expect(screen.getByText(/میزان پوشش هر خدمت به نوع بیمه/)).toBeInTheDocument();
 		expect(screen.getByText("تأمین اجتماعی").parentElement?.querySelector('img')).toHaveAttribute("src", expect.stringContaining("social-security.png"));
 		expect(screen.getByText("بانک مرکزی").parentElement?.querySelector('img')).toHaveAttribute("src", expect.stringContaining("central-bank.png"));
-		expect(screen.getByText("خدمات درمانی").parentElement?.querySelector('img')).toBeNull();
+		expect(screen.getByText("خدمات درمانی (بیمه سلامت)").parentElement?.querySelector('img')).toBeNull();
+		expect(screen.getByText("بیمه کمک‌رسان SOS").parentElement?.querySelector('img')).toBeNull();
 		expect(screen.queryByText(/لوگوی رسمی|نام‌برده در معرفی/)).not.toBeInTheDocument();
 		expect(screen.getByRole("link", { name: /استعلام پوشش بیمه/ })).toHaveAttribute("href", "tel:02177466628");
 	});
@@ -28,6 +29,8 @@ describe("InsuranceLogoCloud", () => {
 		render(<InsuranceLogoCloud locale="en" />);
 		expect(screen.getByRole("heading", { name: "Insurance & partner organisations" })).toBeInTheDocument();
 		expect(screen.getByText("Central Bank of Iran")).toBeInTheDocument();
+		expect(screen.getByText("SOS Assistance Insurance")).toBeInTheDocument();
+		expect(screen.getByText("Medical Services (Iran Health Insurance)")).toBeInTheDocument();
 		expect(screen.getByRole("link", { name: /Ask about insurance coverage/ })).toHaveAttribute("href", "tel:02177466628");
 		expect(screen.queryByText(/لوگوی رسمی|نام‌برده در معرفی/)).not.toBeInTheDocument();
 	});

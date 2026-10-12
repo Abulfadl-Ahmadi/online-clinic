@@ -8,6 +8,8 @@ describe("ClinicFaq", () => {
     render(<ClinicFaq />);
     fireEvent.click(screen.getByRole("button", { name: /برای بررسی کف پا، زانو و ستون فقرات/ }));
     expect(screen.getByText(/برای اطلاع از زمان‌های فعال و هماهنگی مراجعه/)).toBeInTheDocument();
+    expect(screen.getByText(/اسکن کف پا و آنالیز ستون فقرات و اندام‌ها/)).toHaveTextContent(/معاینهٔ دقیق‌تر/);
+    expect(screen.getByText(/دفورمیتی‌ها/)).toHaveTextContent(/اسکن به‌تنهایی/);
     expect(screen.queryByText(/متن معرفی واحد|روزهای فعالیت آن با ساعات عمومی/)).not.toBeInTheDocument();
   });
 });
