@@ -1,6 +1,7 @@
 import logging
 from datetime import date
 
+from django.conf import settings
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -132,7 +133,12 @@ class AppointmentViewSet(ModelViewSet):
             )
 
             # Create payment for the appointment
-            callback_url = request.build_absolute_uri("/api/v1/finance/payments/callback/")
+            backend_url = getattr(settings, "BACKEND_URL", "").strip().rstrip("/")
+            if backend_url:
+                callback_url = f"{backend_url}/api/v1/finance/payments/callback/"
+            else:
+                callback_url = request.build_absolute_uri("/api/v1/finance/payments/callback/")
+
             success, payment, transaction, payment_url = PaymentService.create_payment_for_appointment(
                 appointment=appointment,
                 callback_url=callback_url,

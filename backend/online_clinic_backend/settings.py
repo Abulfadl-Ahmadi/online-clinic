@@ -166,8 +166,13 @@ USE_X_FORWARDED_PORT = True
 # CORS & CSRF Configuration
 # ---------------------------------------------------------------
 
-# Frontend URL for redirects
+# Frontend & Backend URLs for redirects and external callbacks
 FRONTEND_URL = config("FRONTEND_URL", default="http://localhost:3000", cast=str)
+BACKEND_URL = config(
+    "BACKEND_URL",
+    default="http://localhost:8000" if DEBUG else "https://api.dr-rahimi-pt.ir",
+    cast=str,
+)
 
 CORS_ALLOWED_ORIGINS = [
     origin
