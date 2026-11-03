@@ -17,8 +17,9 @@ export function ClinicGallery({ images, title, locale = "fa" }: ClinicGalleryPro
   const touchStart = useRef<number | null>(null);
   const en = locale === "en";
   const imageLabel = (index: number) => en
-    ? `View ${index + 1} of Dr. Rahimi's physiotherapy clinic`
-    : `نمای ${index + 1} از فضای کلینیک فیزیوتراپی دکتر رحیمی`;
+    ? title ? `${title} photo ${index + 1}` : `View ${index + 1} of Dr. Rahimi's physiotherapy clinic`
+    : `${title ?? "فضای کلینیک فیزیوتراپی دکتر رحیمی"}، تصویر ${count(index + 1)}`;
+  const sectionId = `clinic-gallery-${title?.replace(/[^\p{L}\p{N}]+/gu, "-") || "main"}`;
   const count = (value: number) => en ? String(value) : value.toLocaleString("fa-IR");
   const goTo = (step: number) => setSelectedIndex(current => current === null || images.length === 0
     ? null : (current + step + images.length) % images.length);
@@ -27,12 +28,12 @@ export function ClinicGallery({ images, title, locale = "fa" }: ClinicGalleryPro
     .filter(index => Math.abs(index - selectedIndex) <= 2);
 
   return (
-    <section className="brand-soft-section px-4 py-20 sm:py-24" aria-labelledby="clinic-gallery-title" dir={en ? "ltr" : "rtl"}>
+    <section className="brand-soft-section px-4 py-20 sm:py-24" aria-labelledby={sectionId} dir={en ? "ltr" : "rtl"}>
       <div className="mx-auto max-w-7xl">
         <Reveal className="flex flex-wrap items-end justify-between gap-6">
           <div className="max-w-2xl">
             <div className="brand-overline flex items-center gap-2"><Images aria-hidden="true" className="size-4" />{en ? "Gallery" : "گالری"}</div>
-            <h2 id="clinic-gallery-title" className="mt-3 text-3xl font-extrabold text-[var(--brand-ink)] sm:text-4xl">{title ?? (en ? "Explore the clinic" : "فضای کلینیک")}</h2>
+            <h2 id={sectionId} className="mt-3 text-3xl font-extrabold text-[var(--brand-ink)] sm:text-4xl">{title ?? (en ? "Explore the clinic" : "فضای کلینیک")}</h2>
             <p className="mt-4 leading-8 text-[var(--brand-muted)]">{en ? "A closer look at the clinic and its treatment spaces. Select a photo to explore it." : "نگاهی نزدیک به فضای کلینیک و بخش‌های درمان. برای دیدن جزئیات، یکی از تصاویر را انتخاب کنید."}</p>
           </div>
           <p className="rounded-full border border-[var(--brand-line)] px-4 py-2 text-sm font-semibold text-[var(--brand-muted)]" aria-label={en ? `${images.length} clinic photos` : `${count(images.length)} تصویر از کلینیک`}>{count(images.length)} {en ? "photos" : "تصویر"}</p>
