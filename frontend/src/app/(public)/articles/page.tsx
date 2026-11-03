@@ -68,7 +68,7 @@ async function ArticlePage(props: PageProps) {
 					<Reveal className="max-w-3xl">
 						<p className="brand-overline flex items-center gap-2"><BookOpenText className="size-4" />دانشنامهٔ کلینیک</p>
 						<h1 className="mt-4 text-4xl font-extrabold leading-tight text-[var(--brand-ink)] sm:text-5xl">دانش قابل‌فهم برای حرکت آگاهانه‌تر</h1>
-						<p className="mt-5 max-w-2xl text-lg leading-8 text-[var(--brand-copy)]">مقاله‌ها و راهنماهای آموزشی کلینیک دربارهٔ توان‌بخشی، پیشگیری از آسیب و مراقبت از حرکت.</p>
+						<p className="mt-5 max-w-2xl text-lg leading-8 text-[var(--brand-copy)]">مقاله‌ها و راهنماهای آموزشی کلینیک دربارهٔ توان‌بخشی، پیشگیری از آسیب و مراقبت از حرکت.</p><p className="mt-4 inline-flex rounded-full border border-[var(--brand-line)] bg-[var(--brand-surface)] px-4 py-2 text-sm font-bold text-[var(--brand-teal)]">دکتر رحیمی، مؤلف بیش از صد مقاله در مجلات علمی داخلی و خارجی</p>
 					</Reveal>
 				</div>
 			</section>
