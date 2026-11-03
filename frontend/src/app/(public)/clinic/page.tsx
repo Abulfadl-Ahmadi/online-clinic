@@ -23,7 +23,6 @@ const clinicImages = [
   '/images/general/clinic/photo_2025-12-17_03-27-02.jpg', '/images/general/clinic/photo_2025-12-17_03-27-05.jpg',
   '/images/general/clinic/photo_2025-12-17_03-27-07.jpg', '/images/general/clinic/photo_2025-12-17_03-27-09.jpg',
   '/images/general/clinic/photo_2025-12-17_03-27-11.jpg', '/images/general/clinic/photo_2025-12-17_03-27-13.jpg',
-  '/images/general/clinic/photo_2025-12-17_03-27-20.jpg',
 ];
 
 const scanImages = [
