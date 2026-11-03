@@ -30,7 +30,7 @@ import { Footer } from "@/components/layout";
 const clinicFacts = [
 	{ value: "۱۶۰ متر", label: "فضای تخصصی درمان" },
 	{ value: "۱۵۰ متر", label: "فاصله تا متروی نیروی هوایی", hint: "حدودی؛ پیش از مراجعه مسیر را بررسی کنید" },
-	{ value: "۵ روز", label: "ساعت کاری کامل در هفته", hint: "شنبه تا چهارشنبه؛ پنجشنبه نیم‌روز" },
+	{ value: "۸–۱۲ / ۱۵–۲۰", label: "شنبه تا چهارشنبه", hint: "پنجشنبه: ۸ تا ۱۲" },
 	{ value: "شرق تهران", label: "نشانی مرکز", hint: "خیابان پیروزی" },
 ];
 
@@ -55,7 +55,7 @@ const treatmentPath = [
 const clinicPhotos = [
 	"/images/general/clinic/photo_2025-12-17_03-27-09.jpg",
 	"/images/general/clinic/photo_2025-12-17_03-26-17.jpg",
-	"/images/general/clinic/photo_2025-12-17_03-27-20.jpg",
+	"/images/general/clinic/photo_2025-12-17_03-26-39.jpg",
 ];
 
 export default function HomePage() {
@@ -91,6 +91,8 @@ export default function HomePage() {
 			<StatsBlock items={clinicFacts} />
 
 			<section className="relative overflow-hidden bg-[#123e46] px-4 py-20 text-white sm:py-24" id="treatment-path"><div className="absolute inset-0 opacity-20 [background-image:url('/images/brand/motion-path-texture.png')] [background-position:center] [background-size:cover]" /><div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[.8fr_1.2fr] lg:items-end"><div><p className="text-xs font-bold tracking-[0.12em] text-[#b8ded7]">مسیر مراجعه و درمان</p><h2 className="mt-3 text-3xl font-extrabold leading-tight sm:text-4xl">از نخستین مراجعه تا بازگشت مطمئن به حرکت</h2><p className="mt-5 max-w-md leading-8 text-white/75">درمان موفق، یک فرآیند مشترک است: ارزیابی، برنامهٔ روشن و پیگیری مستمر.</p><Link href="/clinic" className="brand-link-ring mt-7 inline-flex items-center gap-2 font-bold text-[#b8ded7] hover:text-white">بیشتر دربارهٔ کلینیک بدانید <ChevronLeft className="size-4" /></Link></div><Stagger className="grid gap-4 md:grid-cols-3">{treatmentPath.map((item) => <StaggerItem key={item.step}><article className="h-full rounded-2xl border border-white/15 bg-white/10 p-6 backdrop-blur-sm"><p className="text-sm font-extrabold text-[#b8ded7]">{item.step}</p><h3 className="mt-9 text-lg font-extrabold">{item.title}</h3><p className="mt-3 text-sm leading-7 text-white/75">{item.description}</p></article></StaggerItem>)}</Stagger></div></section>
+
+			<section className="px-4 py-20 sm:py-24" aria-labelledby="physiotherapy-approach-title"><div className="mx-auto grid max-w-7xl gap-8 rounded-[1.75rem] border border-[var(--brand-line)] bg-[var(--brand-surface)] p-7 sm:p-10 lg:grid-cols-[.7fr_1.3fr] lg:gap-14"><Reveal><p className="brand-overline">رویکرد درمانی</p><h2 id="physiotherapy-approach-title" className="mt-3 text-3xl font-extrabold leading-tight text-[var(--brand-ink)] sm:text-4xl">فیزیوتراپی؛ فراتر از تسکین درد</h2></Reveal><Reveal delay={0.08} className="space-y-4 text-base leading-8 text-[var(--brand-copy)]"><p>درد و محدودیت حرکتی فراتر از جسم است. دردهای مزمن عضلانی‌اسکلتی مانند کمردرد، گردن‌درد و درد شانه و محدودیت‌های حرکتی ناشی از آن‌ها می‌توانند کیفیت زندگی فرد را تحت‌تأثیر قرار دهند.</p><p>با کاهش تحرک، نگرانی از حرکت و ناتوانی در انجام فعالیت‌هایی که پیش‌تر بخشی لذت‌بخش از زندگی بودند، نه‌تنها وضعیت جسمی، بلکه کیفیت خواب، خلق‌وخو و لذت از زندگی نیز تحت‌الشعاع قرار می‌گیرد.</p><p>فیزیوتراپی با رویکردی علمی و فردمحور، فراتر از تسکین علائم، به بهبود عملکرد و بازگشت ایمن فرد به زندگی فعال و ارتقای کیفیت زندگی کمک می‌کند.</p><p className="border-s-2 border-[var(--brand-teal)] ps-4 font-bold text-[var(--brand-ink)]">تسکین درد و بازیابی توانایی حرکتی، فرصتی برای بازگشت به زندگی مستقل‌تر، عملکرد مؤثرتر و بهتر زیستن است.</p></Reveal></div></section>
 
 			<BentoGrid eyebrow="رویکرد کلینیک" title="دانش روز، در خدمت تصمیم درمانی دقیق‌تر" cells={[
 				{ title: "توان‌بخشی مبتنی بر شواهد", description: "روش درمان بر اساس ارزیابی، نیاز هر بیمار و همکاری با پزشک معالج انتخاب می‌شود.", span: 4, icon: ShieldCheck, visual: <div className="relative h-36 w-full"><Image src="/images/brand/manual-therapy.png" alt="درمان دستی در مرکز" fill sizes="(max-width: 1024px) 100vw, 65vw" className="object-cover object-center" /></div> },
