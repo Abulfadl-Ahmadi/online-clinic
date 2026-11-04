@@ -20,7 +20,7 @@ services:
   # Django API Backend
   # -------------------------
   backend:
-    image: ghcr.io/abulfadl-ahmadi/online-clinic-backend:latest
+    image: ghcr.io/abulfadl-ahmadi/online-clinic-backend:${IMAGE_TAG:-latest}
     build: ./backend
     container_name: online_clinic_backend
     ports:
@@ -42,7 +42,7 @@ services:
   # Celery Worker
   # -------------------------
   celery_worker:
-    image: ghcr.io/abulfadl-ahmadi/online-clinic-backend:latest
+    image: ghcr.io/abulfadl-ahmadi/online-clinic-backend:${IMAGE_TAG:-latest}
     build: ./backend
     container_name: online_clinic_celery_worker
     command: ["celery", "-A", "online_clinic_backend", "worker", "-l", "info"]
@@ -62,7 +62,7 @@ services:
   # Celery Beat (Scheduler)
   # -------------------------
   celery_beat:
-    image: ghcr.io/abulfadl-ahmadi/online-clinic-backend:latest
+    image: ghcr.io/abulfadl-ahmadi/online-clinic-backend:${IMAGE_TAG:-latest}
     build: ./backend
     container_name: online_clinic_celery_beat
     command: ["celery", "-A", "online_clinic_backend", "beat", "-l", "info"]
@@ -81,9 +81,18 @@ services:
   # Next.js Frontend
   # -------------------------
   frontend:
-    image: ghcr.io/abulfadl-ahmadi/online-clinic-frontend:latest
+    image: ghcr.io/abulfadl-ahmadi/online-clinic-frontend:${IMAGE_TAG:-latest}
     build: ./frontend
     container_name: online_clinic_frontend
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m
+      - /var/tmp:rw,noexec,nosuid,size=16m
+      - /app/.next/cache:rw,noexec,nosuid,size=128m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     ports:
       - "127.0.0.1:3000:3000"
     env_file:
