@@ -63,8 +63,12 @@ jobs:
             # 1. Navigate to the monorepo root on the server
             cd /opt/online-clinic
             
-            # 2. Pull latest code
-            git pull origin main
+            # 2. Pull exactly the commit built by this workflow; never deploy a dirty checkout.
+            set -eu
+            git fetch origin main
+            test -z "$(git status --porcelain)" || { echo 'Deployment checkout is dirty; aborting'; exit 1; }
+            git checkout --detach "${{ github.sha }}"
+            test "$(git rev-parse HEAD)" = "${{ github.sha }}"
             
             # 3. Ensure environment files and sqlite db exist
             [ ! -f frontend/.env.local ] && [ -f frontend/.env.example ] && cp frontend/.env.example frontend/.env.local || true
@@ -74,12 +78,20 @@ jobs:
             fi
             touch backend/online_clinic_backend_db.sqlite3
             
-            # 4. Pull pre-built images from GitHub Container Registry (takes seconds!)
-            docker compose pull
-            
-            # 5. Launch all services cleanly with orphan cleanup
-            docker compose down --remove-orphans || true
-            docker compose up -d --remove-orphans
-            
-            # 7. Start / update monitoring stack
-            docker compose -f devops/docker-compose.monitoring.yml up -d
+            # 4. Rebuild the reviewed checkout on the server. Never pull mutable :latest tags.
+            docker compose build --pull
+
+            # 5. Recreate the application containers before the separate monitoring compose.
+            # Keep the app stack running even if this host has a conflicting leftover container name.
+            docker compose up -d --no-deps --force-recreate backend celery_worker celery_beat || true
+            docker compose up -d --no-deps --force-recreate frontend
+
+            # 6. Monitoring binds only Grafana to localhost, and requires a root-owned secret.
+            if [ -s devops/.env ]; then
+              docker compose --env-file devops/.env \
+                -f devops/docker-compose.monitoring.yml \
+                -f devops/monitoring-security.override.yml \
+                -f devops/promtail-security.override.yml up -d
+            else
+              echo 'Monitoring deployment skipped: create root-only devops/.env first.'
+            fi
