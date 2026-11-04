@@ -66,9 +66,9 @@ jobs:
             # 2. Pull exactly the commit built by this workflow; never deploy a dirty checkout.
             set -eu
             git fetch origin main
-            # Ignore server-local untracked runtime files (for example SQLite); block tracked source edits.
-            test -z "$(git status --porcelain --untracked-files=no)" || { echo 'Deployment checkout has tracked edits; aborting'; exit 1; }
-            git checkout --detach "${{ github.sha }}"
+            # Deploy the immutable workflow SHA, replacing tracked checkout edits but preserving untracked runtime data.
+            # Never run `git clean`; keep server secrets and persistent data intact.
+            git checkout --force --detach "${{ github.sha }}"
             test "$(git rev-parse HEAD)" = "${{ github.sha }}"
             
             # 3. Ensure environment files and sqlite db exist
@@ -82,10 +82,10 @@ jobs:
             # 4. Rebuild the reviewed checkout on the server. Never pull mutable :latest tags.
             docker compose build --pull
 
-            # 5. Recreate the application containers before the separate monitoring compose.
-            # Keep the app stack running even if this host has a conflicting leftover container name.
-            docker compose up -d --no-deps --force-recreate backend celery_worker celery_beat || true
-            docker compose up -d --no-deps --force-recreate frontend
+            # 5. Remove the known conflicting frontend container if a previous deployment left it behind.
+            docker rm -f online_clinic_frontend 2>/dev/null || true
+            # Recreate the application services; propagate errors so a failed deploy is not reported as success.
+            docker compose up -d --no-deps --force-recreate backend celery_worker celery_beat frontend
 
             # 6. Monitoring binds only Grafana to localhost, and requires a root-owned secret.
             if [ -s devops/.env ]; then
