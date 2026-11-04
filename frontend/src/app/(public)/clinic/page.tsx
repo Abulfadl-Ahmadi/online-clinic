@@ -23,9 +23,6 @@ const clinicImages = [
   '/images/general/clinic/photo_2025-12-17_03-27-02.jpg', '/images/general/clinic/photo_2025-12-17_03-27-05.jpg',
   '/images/general/clinic/photo_2025-12-17_03-27-07.jpg', '/images/general/clinic/photo_2025-12-17_03-27-09.jpg',
   '/images/general/clinic/photo_2025-12-17_03-27-11.jpg', '/images/general/clinic/photo_2025-12-17_03-27-13.jpg',
-];
-
-const scanImages = [
   '/images/general/clinic/scan/scan-room-wide.jpg',
   '/images/general/clinic/scan/posture-analyzer.jpg',
   '/images/general/clinic/scan/foot-scan-station.jpg',
@@ -52,8 +49,7 @@ export default function ClinicPage() {
 
       <CareOptions />
       <InsuranceLogoCloud />
-      <ClinicGallery images={scanImages} title="عکس‌های واحد اسکن و آنالیز حرکات" />
-      <ClinicGallery images={clinicImages} title="فضای کلینیک" />
+      <ClinicGallery images={clinicImages} title="گالری کلینیک؛ شامل تصاویر واحد اسکن و آنالیز حرکات" />
       <BusinessCardPreview />
 
       <section className="px-4 py-20" aria-labelledby="visit-title"><div className="mx-auto max-w-7xl"><Reveal className="mb-8"><p className="brand-overline">برنامه‌ریزی مراجعه</p><h2 id="visit-title" className="mt-3 text-3xl font-extrabold text-[var(--brand-ink)]">پیش از آمدن به کلینیک</h2></Reveal><Reveal className="public-info-strip grid overflow-hidden rounded-2xl border border-[var(--brand-line)] sm:grid-cols-3"><div className="p-7"><MapPin aria-hidden="true" className="size-6 text-[var(--brand-teal)]" /><h3 className="mt-6 text-xl font-extrabold text-[var(--brand-ink)]">آدرس</h3><p className="mt-3 leading-8 text-[var(--brand-copy)]">تهران، خیابان پیروزی، بین خیابان سوم و چهارم نیروی هوایی، پلاک ۱۲۵، ساختمان پزشکان ادیب، مرکز فیزیوتراپی دکتر رحیمی.</p></div><div className="p-7"><Clock3 aria-hidden="true" className="size-6 text-[var(--brand-teal)]" /><h3 className="mt-6 text-xl font-extrabold text-[var(--brand-ink)]">ساعت مراجعه</h3><p className="mt-3 leading-8 text-[var(--brand-copy)]">شنبه تا چهارشنبه: ۸ تا ۱۲ و ۱۵ تا ۲۰<br />پنجشنبه: ۸ تا ۱۲</p></div><div className="p-7"><TrainFront aria-hidden="true" className="size-6 text-[var(--brand-teal)]" /><h3 className="mt-6 text-xl font-extrabold text-[var(--brand-ink)]">دسترسی</h3><p className="mt-3 leading-8 text-[var(--brand-copy)]">ایستگاه متروی نیروی هوایی در فاصلهٔ حدود ۱۵۰ متری کلینیک قرار دارد. امکان پارک در خیابان و کوچه‌های اطراف نیز معمولاً فراهم است.</p></div></Reveal><a href="tel:02177402528" className="brand-link-ring mt-8 inline-flex min-h-12 items-center rounded-xl border border-[var(--brand-line)] bg-[var(--brand-surface)] px-6 font-bold text-[var(--brand-ink)]">هماهنگی تلفنی پیش از مراجعه</a></div></section>
